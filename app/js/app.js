@@ -17,13 +17,13 @@ import {
   saveDossier,
   today,
 } from './core/storage.js';
-import { SAMPLE_DOSSIER } from './data/sample-dossier.js';
+import { SAMPLES } from './data/sample-dossier.js';
 import { fillForm, readForm, setupForm } from './ui/form.js';
 import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js';
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 
-export const APP_VERSION = '0.2.0';
+export const APP_VERSION = '0.3.0';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -278,9 +278,24 @@ $('btn-print').addEventListener('click', () => {
   if (currentQr) printCard(currentQr, state);
 });
 
+// Patients de test fictifs
+SAMPLES.forEach((s, i) => {
+  const o = document.createElement('option');
+  o.value = i;
+  o.textContent = s.label;
+  $('sel-sample').append(o);
+});
+
+function loadSample(index) {
+  const s = SAMPLES[index] || SAMPLES[0];
+  loadIntoForm({ ...structuredClone(s.dossier), updated: today() });
+  $('sel-sample').value = SAMPLES.indexOf(s);
+  toast(`Patient de test chargé : ${s.dossier.firstName} ${s.dossier.lastName}`);
+}
+
 $('btn-sample').addEventListener('click', () => {
-  if (hasData(state) && !confirm('Remplacer votre dossier par l’exemple ?')) return;
-  loadIntoForm({ ...structuredClone(SAMPLE_DOSSIER), updated: today() });
+  if (hasData(state) && !confirm('Remplacer votre dossier par ce patient de test ?')) return;
+  loadSample(+$('sel-sample').value);
 });
 
 $('btn-clear').addEventListener('click', () => {
@@ -326,7 +341,15 @@ fillForm(form, state);
 refresh();
 window.addEventListener('resize', debounce(refresh, 200));
 
-// Lien de démonstration : .../?exemple charge le dossier fictif (si vide)
-if (new URLSearchParams(location.search).has('exemple') && !hasData(state)) {
-  loadIntoForm({ ...structuredClone(SAMPLE_DOSSIER), updated: today() });
+// Liens de démonstration : .../?exemple (=1) … ?exemple=5 chargent un patient fictif
+const sampleParam = new URLSearchParams(location.search).get('exemple');
+if (sampleParam !== null) {
+  const index = Math.max(1, parseInt(sampleParam, 10) || 1) - 1;
+  const s = SAMPLES[index] || SAMPLES[0];
+  const name = `${s.dossier.firstName} ${s.dossier.lastName}`;
+  if (!hasData(state) || confirm(`Remplacer le dossier actuel par le patient de test « ${name} » ?`)) {
+    loadSample(index);
+  }
+  // On retire "?exemple" de l'adresse : un rechargement ne redemande pas
+  history.replaceState(null, '', location.pathname);
 }

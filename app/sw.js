@@ -8,7 +8,7 @@
 // Ajouter ici tout nouveau fichier de l'application (APP_FILES).
 // =====================================================================
 
-const CACHE_VERSION = 'qredo-v0.2.0';
+const CACHE_VERSION = 'qredo-v0.3.0';
 
 const APP_FILES = [
   './',
