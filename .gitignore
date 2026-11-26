@@ -1,0 +1,15 @@
+# Sauvegardes de dossiers patients : JAMAIS dans le dépôt
+*.json
+!app/**/*.json
+!.vscode/*.json
+!package.json
+qredo-*.png
+
+# Documents internes : restent sur ce PC, jamais publiés
+MinimumlRequierement/
+docs/
+
+# Système / éditeur
+.DS_Store
+Thumbs.db
+node_modules/

@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>QREDO – Mon QR code médical d'urgence</title>
+    <meta name="description" content="Créez votre QR code médical d'urgence. Vos données restent sur votre appareil." />
+    <meta name="theme-color" content="#c62828" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ============================ EN-TÊTE ============================ -->
+    <header class="topbar">
+      <img class="topbar__logo" src="icons/icon-192.png" alt="" width="40" height="40" />
+      <div class="topbar__title">
+        <h1>QREDO</h1>
+        <p>Mon QR code médical d'urgence</p>
+      </div>
+      <button id="btn-install" class="btn btn--light" type="button" hidden>📲 Installer</button>
+    </header>
+
+    <p class="privacy">🔒 Vos données restent <strong>sur cet appareil</strong>. Rien n'est envoyé sur Internet.</p>
+
+    <main class="layout">
+      <!-- ========================== FORMULAIRE ========================== -->
+      <form id="dossier-form" class="form" autocomplete="off" novalidate>
+        <section class="card">
+          <h2>👤 Identité</h2>
+          <div class="grid grid--2">
+            <label>Nom<input data-field="lastName" type="text" autocapitalize="characters" /></label>
+            <label>Prénom<input data-field="firstName" type="text" /></label>
+          </div>
+          <div class="grid grid--2">
+            <label
+              >Sexe
+              <select data-field="sex" id="sel-sex"></select>
+            </label>
+            <label>Date de naissance<input data-field="dob" type="date" /></label>
+          </div>
+          <label
+            >Langues parlées <small>(ex. FR, NL)</small>
+            <input data-field="languages" type="text" placeholder="FR" />
+          </label>
+        </section>
+
+        <section class="card card--alert">
+          <h2>⚠️ Allergies</h2>
+          <label class="check"><input data-field="noKnownAllergy" type="checkbox" /> Aucune allergie connue</label>
+          <div id="allergy-list" class="rows"></div>
+          <button id="btn-add-allergy" class="btn btn--ghost" type="button">＋ Ajouter une allergie</button>
+          <datalist id="dl-allergens"></datalist>
+        </section>
+
+        <section class="card card--alert">
+          <h2>🩸 Anticoagulants / sang fluide</h2>
+          <p class="hint">Essentiel en cas de saignement ou d'opération urgente.</p>
+          <div id="checks-anticoagulants" class="checks"></div>
+        </section>
+
+        <section class="card">
+          <h2>🫀 Implants et appareils</h2>
+          <div id="checks-implants" class="checks"></div>
+          <label
+            >Autres <small>(séparés par des virgules)</small>
+            <input data-field="implantsOther" type="text" />
+          </label>
+        </section>
+
+        <section class="card">
+          <h2>🩺 Maladies</h2>
+          <div id="checks-conditions" class="checks"></div>
+          <label
+            >Autres <small>(séparées par des virgules)</small>
+            <input data-field="conditionsOther" type="text" />
+          </label>
+        </section>
+
+        <section class="card">
+          <h2>💊 Médicaments</h2>
+          <p class="hint">Le nom commercial est converti en molécule internationale (ex. Coversyl → PERINDOPRIL).</p>
+          <div id="med-list" class="rows"></div>
+          <button id="btn-add-med" class="btn btn--ghost" type="button">＋ Ajouter un médicament</button>
+          <datalist id="dl-meds"></datalist>
+        </section>
+
+        <section class="card">
+          <h2>📜 Volontés</h2>
+          <div class="grid grid--2 grid--center">
+            <label class="check"><input data-field="advanceDirective" type="checkbox" /> Directives anticipées</label>
+            <label>Date<input data-field="advanceDirectiveDate" type="date" /></label>
+          </div>
+          <label class="check"><input data-field="refuseTransfusion" type="checkbox" /> Refus de transfusion sanguine</label>
+          <label class="check"><input data-field="dnr" type="checkbox" /> Ne pas réanimer (DNR)</label>
+        </section>
+
+        <section class="card">
+          <h2>📏 Mesures</h2>
+          <div class="grid grid--3">
+            <label>Groupe sanguin<select data-field="bloodGroup" id="sel-blood"></select></label>
+            <label>Poids (kg)<input data-field="weight" type="number" inputmode="numeric" min="1" max="400" /></label>
+            <label>Taille (cm)<input data-field="height" type="number" inputmode="numeric" min="30" max="250" /></label>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>📞 Personnes à prévenir</h2>
+          <div class="contact" data-contact="0">
+            <div class="grid grid--3">
+              <label>Nom<input data-k="name" type="text" /></label>
+              <label>Lien<select data-k="relation" class="sel-relation"></select></label>
+              <label>Téléphone<input data-k="phone" type="tel" placeholder="+32 …" /></label>
+            </div>
+          </div>
+          <div class="contact" data-contact="1">
+            <div class="grid grid--3">
+              <label>Nom<input data-k="name" type="text" /></label>
+              <label>Lien<select data-k="relation" class="sel-relation"></select></label>
+              <label>Téléphone<input data-k="phone" type="tel" placeholder="+32 …" /></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>👨‍⚕️ Médecin traitant</h2>
+          <div class="grid grid--2">
+            <label>Nom<input data-field="gpName" type="text" placeholder="Dr …" /></label>
+            <label>Téléphone<input data-field="gpPhone" type="tel" placeholder="+32 …" /></label>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>📝 Remarque</h2>
+          <label
+            >Courte, de préférence en anglais
+            <input data-field="notes" type="text" maxlength="140" placeholder="ex. Reduced mobility" />
+          </label>
+        </section>
+      </form>
+
+      <!-- ========================= PANNEAU QR ========================= -->
+      <aside id="panel" class="panel">
+        <section class="card card--qr">
+          <h2>Mon QR code vital</h2>
+          <div class="qr-box">
+            <canvas id="qr-canvas" aria-label="QR code médical"></canvas>
+            <p id="qr-error" class="qr-error" hidden></p>
+          </div>
+
+          <div class="gauge" aria-label="Taille du QR code">
+            <div class="gauge__track"><div id="gauge-bar" class="gauge__bar"></div></div>
+            <div class="gauge__labels"><span id="gauge-text">0 / 900 octets</span><span id="gauge-status"></span></div>
+          </div>
+
+          <dl class="stats">
+            <div><dt>Caractères</dt><dd id="st-chars">0</dd></div>
+            <div><dt>Version QR</dt><dd id="st-version">–</dd></div>
+            <div><dt>Carrés de côté</dt><dd id="st-modules">–</dd></div>
+            <div><dt>Octets gagnés sans accents</dt><dd id="st-saved">0</dd></div>
+          </dl>
+
+          <button id="btn-fullscreen" class="btn btn--primary btn--block" type="button">🔍 Afficher en grand</button>
+
+          <details class="qr-text">
+            <summary>Voir le texte encodé</summary>
+            <pre id="qr-text"></pre>
+          </details>
+        </section>
+
+        <section class="card">
+          <h2>📱 Fond d'écran de veille</h2>
+          <label
+            >Modèle de téléphone
+            <select id="sel-wallpaper">
+              <option value="auto">Cet appareil (automatique)</option>
+              <option value="samsung">Samsung Galaxy (1080 × 2340)</option>
+              <option value="pixel">Google Pixel (1080 × 2424)</option>
+              <option value="generic">Android standard (1080 × 2400)</option>
+              <option value="iphone">iPhone (1179 × 2556)</option>
+            </select>
+          </label>
+          <div class="wallpaper-preview"><img id="wallpaper-img" alt="Aperçu du fond d'écran" /></div>
+          <div class="btn-row">
+            <button id="btn-wallpaper" class="btn btn--primary" type="button">⬇️ Télécharger</button>
+            <button id="btn-share" class="btn" type="button" hidden>📤 Partager</button>
+          </div>
+          <p class="hint">
+            Puis : Galerie → l'image → ⋮ → <em>Définir comme fond d'écran</em> → <em>Écran de verrouillage</em>.
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>🔄 Transférer / sauvegarder</h2>
+          <div class="btn-col">
+            <button id="btn-scan" class="btn" type="button">📷 Importer en scannant un QR QREDO</button>
+            <button id="btn-scan-image" class="btn" type="button">🖼️ Importer depuis une photo du QR</button>
+            <button id="btn-print" class="btn" type="button">🖨️ Imprimer ma carte portefeuille</button>
+            <button id="btn-export" class="btn" type="button">💾 Exporter mon dossier (fichier)</button>
+            <button id="btn-import" class="btn" type="button">📂 Importer un dossier (fichier)</button>
+          </div>
+          <input id="file-import" type="file" accept=".json,application/json" hidden />
+          <input id="file-image" type="file" accept="image/*" hidden />
+        </section>
+
+        <section class="card card--muted">
+          <h2>🧪 Démonstration</h2>
+          <div class="btn-row">
+            <button id="btn-sample" class="btn" type="button">Charger l'exemple</button>
+            <button id="btn-clear" class="btn btn--danger" type="button">Tout effacer</button>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      QREDO – QR Electronic Data Organiser · POC · Idée originale : Dr L. Bodson
+      <span id="app-version"></span>
+    </footer>
+
+    <!-- Bouton flottant (téléphone) : aller au QR -->
+    <button id="fab-qr" class="fab" type="button" aria-label="Voir mon QR code">QR</button>
+
+    <!-- ====================== QR EN PLEIN ÉCRAN ====================== -->
+    <div id="overlay-qr" class="overlay overlay--white" hidden>
+      <p class="overlay__banner">EMERGENCY MEDICAL ID · URGENCE MÉDICALE</p>
+      <canvas id="qr-canvas-big"></canvas>
+      <p class="overlay__hint">Touchez l'écran pour fermer</p>
+    </div>
+
+    <!-- ========================== SCANNER ========================== -->
+    <div id="overlay-scan" class="overlay overlay--dark" hidden>
+      <video id="scan-video" playsinline muted></video>
+      <div class="scan-frame"></div>
+      <p id="scan-status" class="overlay__hint">Visez le QR code QREDO…</p>
+      <button id="btn-scan-close" class="btn btn--light" type="button">Fermer</button>
+    </div>
+
+    <!-- Message temporaire -->
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <!-- ================= CARTE PORTEFEUILLE (impression) ================= -->
+    <section id="print-area" class="print-area" aria-hidden="true">
+      <div class="print-card">
+        <div class="print-card__text">
+          <p class="print-card__title">EMERGENCY<br />MEDICAL ID</p>
+          <p class="print-card__sub">Urgence médicale</p>
+          <p id="pc-name" class="print-card__name"></p>
+          <p class="print-card__small">Scan with any phone camera</p>
+          <p id="pc-updated" class="print-card__small"></p>
+        </div>
+        <img id="pc-qr" class="print-card__qr" alt="" />
+      </div>
+      <p class="print-help">✂️ Découpez la carte en suivant le pointillé (format carte bancaire 85,6 × 54 mm).</p>
+    </section>
+
+    <!-- Bibliothèques (scripts classiques) puis application (module) -->
+    <script src="lib/qrcode-generator.js"></script>
+    <script src="lib/jsqr.js" defer></script>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

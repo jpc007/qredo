@@ -1,0 +1,3 @@
+# Bibliothèques externes : on ne les reformate pas
+app/lib/
+MinimumlRequierement/

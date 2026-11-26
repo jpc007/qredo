@@ -1,0 +1,14 @@
+{
+  // Live Server sert le dossier "app" (racine de l'application)
+  "liveServer.settings.root": "/app",
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.CustomBrowser": "chrome",
+
+  // Prettier met le code en forme à chaque sauvegarde
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[powershell]": { "editor.defaultFormatter": "ms-vscode.powershell" },
+
+  "files.associations": { "*.webmanifest": "json" },
+  "files.encoding": "utf8"
+}
