@@ -1,0 +1,276 @@
+// =====================================================================
+// QREDO - Textes de l'interface : ANGLAIS (English)
+// ---------------------------------------------------------------------
+// Mêmes clés que fr.js (langue de référence).
+// =====================================================================
+
+export default {
+  // En-tête et page
+  'app.title': 'QREDO – My emergency medical QR code',
+  'app.description': 'Create your emergency medical QR code. Your data stays on your device.',
+  'app.tagline': 'My emergency medical QR code',
+  'app.install': '📲 Install',
+  'app.privacy': '🔒 Your data stays <strong>on this device</strong>. Nothing is sent over the Internet.',
+  'app.installed': 'QREDO is now on your home screen 🎉',
+  'app.checkingUpdate': 'Checking for updates…',
+
+  // Menu "⋮"
+  'menu.button': 'Menu: choose the language',
+  'menu.language': '🌐 Language',
+
+  // Identité
+  'identity.title': '👤 Identity',
+  'identity.lastName': 'Surname',
+  'identity.firstName': 'First name',
+  'identity.sex': 'Sex',
+  'identity.dob': 'Date of birth',
+  'identity.address': 'Address',
+  'identity.addressPlaceholder': 'Street, number, postcode, town',
+  'identity.languages': 'Languages spoken',
+  'identity.languagesExample': '(e.g. EN, FR)',
+  'identity.languagesPlaceholder': 'EN',
+  'sex.M': 'Male',
+  'sex.F': 'Female',
+  'sex.X': 'Other / not specified',
+
+  // Allergies
+  'allergies.title': '⚠️ Allergies',
+  'allergies.none': 'No known allergies',
+  'allergies.add': '＋ Add an allergy',
+  'allergies.placeholder': 'Substance (e.g. Penicillin)',
+  'reaction.choose': '— reaction? —',
+  'reaction.SEVERE': 'Severe (swelling, breathing trouble)',
+  'reaction.MODERATE': 'Moderate',
+  'reaction.MILD': 'Mild (hives, itching)',
+  'allergen.PENICILLIN': 'Penicillin',
+  'allergen.AMOXICILLIN': 'Amoxicillin',
+  'allergen.CEPHALOSPORINS': 'Cephalosporins',
+  'allergen.SULFONAMIDES': 'Sulfonamides (sulfa drugs)',
+  'allergen.ASPIRIN': 'Aspirin',
+  'allergen.NSAID': 'Anti-inflammatories (NSAIDs, ibuprofen)',
+  'allergen.OPIOIDS': 'Opioids / codeine',
+  'allergen.IODINE CONTRAST': 'Iodinated contrast medium',
+  'allergen.LOCAL ANESTHETICS': 'Local anaesthetics',
+  'allergen.CHLORHEXIDINE': 'Chlorhexidine',
+  'allergen.LATEX': 'Latex',
+  'allergen.PEANUT': 'Peanuts',
+  'allergen.TREE NUTS': 'Tree nuts (walnuts, hazelnuts)',
+  'allergen.SHELLFISH': 'Shellfish / seafood',
+  'allergen.FISH': 'Fish',
+  'allergen.EGG': 'Egg',
+  'allergen.MILK': 'Milk',
+  'allergen.WHEAT/GLUTEN': 'Wheat / gluten',
+  'allergen.BEE/WASP VENOM': 'Bee / wasp sting',
+
+  // Implants
+  'implants.title': '🫀 Implants and devices',
+  'implants.other': 'Others',
+  'implants.otherHint': '(separated by commas)',
+  'implant.PACEMAKER': 'Pacemaker',
+  'implant.ICD': 'Implanted defibrillator (ICD)',
+  'implant.MECHANICAL HEART VALVE': 'Mechanical heart valve',
+  'implant.CORONARY STENT': 'Coronary stent',
+  'implant.INSULIN PUMP': 'Insulin pump',
+  'implant.NEUROSTIMULATOR': 'Neurostimulator',
+  'implant.COCHLEAR IMPLANT': 'Cochlear implant',
+  'implant.VP SHUNT': 'Brain shunt (VP shunt)',
+  'implant.JOINT PROSTHESIS': 'Joint replacement (hip, knee)',
+  'implant.CPAP': 'Sleep apnoea machine (CPAP)',
+
+  // Maladies
+  'conditions.title': '🩺 Medical conditions',
+  'conditions.other': 'Others',
+  'conditions.otherHint': '(separated by commas)',
+  'condition.DIABETES TYPE 1': 'Type 1 diabetes (insulin)',
+  'condition.DIABETES TYPE 2': 'Type 2 diabetes',
+  'condition.EPILEPSY': 'Epilepsy',
+  'condition.HYPERTENSION': 'High blood pressure',
+  'condition.HEART FAILURE': 'Heart failure',
+  'condition.CORONARY DISEASE': 'Coronary disease / heart attack',
+  'condition.ATRIAL FIBRILLATION': 'Atrial fibrillation',
+  'condition.PAST STROKE': 'Previous stroke',
+  'condition.ASTHMA': 'Asthma',
+  'condition.COPD': 'COPD (chronic bronchitis)',
+  'condition.SLEEP APNEA': 'Sleep apnoea',
+  'condition.KIDNEY FAILURE': 'Kidney failure',
+  'condition.DIALYSIS': 'Dialysis',
+  'condition.LIVER CIRRHOSIS': 'Liver cirrhosis',
+  'condition.BLEEDING DISORDER': 'Haemophilia / bleeding disorder',
+  'condition.SICKLE CELL DISEASE': 'Sickle cell disease',
+  'condition.ADRENAL INSUFFICIENCY': 'Adrenal insufficiency',
+  'condition.MYASTHENIA': 'Myasthenia gravis',
+  'condition.DEMENTIA': 'Dementia / Alzheimer’s',
+  'condition.PARKINSON': 'Parkinson’s',
+  'condition.CANCER UNDER TREATMENT': 'Cancer under treatment',
+  'condition.IMMUNOSUPPRESSED': 'Weakened immunity (transplant, chemo…)',
+  'condition.PREGNANT': 'Pregnant',
+  'condition.HEARING IMPAIRED': 'Hard of hearing',
+  'condition.VISUALLY IMPAIRED': 'Visually impaired',
+
+  // Médicaments
+  'meds.title': '💊 Medicines',
+  'meds.hint':
+    'Type the name you know (e.g. Medrol): the active substance appears below, and that is what goes into the QR.',
+  'meds.scan': '📷 Scan the box',
+  'meds.add': '＋ Add a medicine',
+  'meds.namePlaceholder': 'Medicine (e.g. Medrol)',
+  'meds.dosePlaceholder': 'Dose (e.g. 4 mg)',
+  'meds.molecule': '→ Active substance: {inn}',
+  'meds.notFound': 'Active substance not found: the name will be written as is in the QR.',
+  'meds.inactive': 'no longer sold',
+  'meds.dbInfo': 'Suggestions: official Belgian SAM database (FAMHP / eHealth), {count} medicines, updated on {date}.',
+  'meds.dbUnavailable': 'Medicine database unavailable (offline?): you can still type freely.',
+  'common.remove': 'Remove',
+  'common.close': 'Close',
+
+  // Volontés
+  'wishes.title': '📜 Wishes',
+  'wishes.advanceDirective': 'Advance directive',
+  'wishes.date': 'Date',
+  'wishes.refuseTransfusion': 'Refuses blood transfusion',
+  'wishes.dnr': 'Do not resuscitate (DNR)',
+
+  // Mesures
+  'measures.title': '📏 Measurements',
+  'measures.blood': 'Blood group',
+  'measures.bloodUnknown': 'Unknown',
+  'measures.weight': 'Weight (kg)',
+  'measures.height': 'Height (cm)',
+
+  // Personnes à prévenir
+  'contacts.title': '📞 Emergency contacts',
+  'contacts.name': 'Name',
+  'contacts.relation': 'Relationship',
+  'contacts.phone': 'Phone',
+  'relation.choose': '— relationship? —',
+  'relation.SPOUSE': 'Spouse / partner',
+  'relation.CHILD': 'Child',
+  'relation.PARENT': 'Parent',
+  'relation.SIBLING': 'Brother / sister',
+  'relation.FRIEND': 'Friend',
+  'relation.NEIGHBOR': 'Neighbour',
+  'relation.CAREGIVER': 'Carer',
+  'relation.OTHER': 'Other',
+
+  // Médecin traitant
+  'gp.title': '👨‍⚕️ GP (family doctor)',
+  'gp.name': 'Name',
+  'gp.phone': 'Phone',
+
+  // Remarque
+  'notes.title': '📝 Note',
+  'notes.label': 'Short, preferably in English',
+  'notes.placeholder': 'e.g. Reduced mobility',
+
+  // Panneau du QR code
+  'qr.title': 'My medical QR code',
+  'qr.canvasLabel': 'Medical QR code',
+  'qr.gaugeLabel': 'QR code size',
+  'qr.bytes': '{bytes} / {max} bytes',
+  'qr.statusOk': '✅ Easy to read',
+  'qr.statusWarn': '🟠 Close to the limit',
+  'qr.statusOver': '🔴 Too long: simplify',
+  'qr.chars': 'Characters',
+  'qr.version': 'QR version',
+  'qr.modules': 'Squares per side',
+  'qr.saved': 'Bytes saved without accents',
+  'qr.fullscreen': '🔍 Show full screen',
+  'qr.showText': 'See the encoded text',
+  'qr.tooLong': 'Text too long for a QR code. Please remove some information.',
+
+  // Fond d'écran
+  'wallpaper.title': '📱 Lock screen wallpaper',
+  'wallpaper.model': 'Phone model',
+  'wallpaper.auto': 'This device (automatic)',
+  'wallpaper.generic': 'Standard Android (1080 × 2400)',
+  'wallpaper.previewAlt': 'Wallpaper preview',
+  'wallpaper.download': '⬇️ Download',
+  'wallpaper.share': '📤 Share',
+  'wallpaper.help': 'Then: Gallery → the image → ⋮ → <em>Set as wallpaper</em> → <em>Lock screen</em>.',
+  'wallpaper.subtitle': 'MEDICAL EMERGENCY · SCAN ME',
+  'wallpaper.saved': 'Image saved in your downloads.',
+  'wallpaper.shareTitle': 'QREDO – wallpaper',
+  'wallpaper.fileName': 'qredo-wallpaper',
+  'wallpaper.noQr': 'No QR code to place.',
+
+  // Offrir l'application
+  'invite.title': '🤝 Give QREDO to a loved one',
+  'invite.hint': 'It’s free: let them scan this QR code to install the app.',
+  'invite.show': '📲 Show the app’s QR code',
+  'invite.shareLink': '📤 Share the link (WhatsApp, SMS…)',
+  'invite.shareText': 'My emergency medical QR code, free. Get it too:',
+  'invite.banner': 'QREDO · free',
+  'invite.scanHint': 'Scan with the camera to install QREDO',
+
+  // Transférer / sauvegarder
+  'transfer.title': '🔄 Transfer / back up',
+  'transfer.scan': '📷 Import by scanning a QREDO QR',
+  'transfer.scanImage': '🖼️ Import from a photo of the QR',
+  'transfer.print': '🖨️ Print my wallet card',
+  'transfer.export': '💾 Export my record (file)',
+  'transfer.import': '📂 Import a record (file)',
+  'transfer.defaultFileName': 'record',
+
+  // Import
+  'import.notQredo': 'This QR code is not a QREDO QR.',
+  'import.noName': 'no name',
+  'import.confirmQr': 'Replace the current record with the one from the QR ({who})?',
+  'import.doneQr': 'Record imported: {who} ✅',
+  'import.noQrInImage': 'No QR code found in this image.',
+  'import.confirmFile': 'Replace the current record with the one from the file?',
+  'import.doneFile': 'Record imported ✅',
+  'import.notBackup': 'This file is not a QREDO backup.',
+
+  // Démonstration
+  'demo.title': '🧪 Demo',
+  'demo.patient': 'Test patient (fictional)',
+  'demo.load': 'Load the example',
+  'demo.clear': 'Erase everything',
+  'demo.loaded': 'Test patient loaded: {name}',
+  'demo.confirmReplace': 'Replace your record with this test patient?',
+  'demo.confirmLink': 'Replace the current record with the test patient “{name}”?',
+  'demo.confirmClear': 'Erase all data from this device?',
+  'sample.1': '1. Jean-Pierre Dupont, 51 – heart patient, on anticoagulants',
+  'sample.2': '2. Françoise Lemaître, 41 – type 1 diabetes, epilepsy',
+  'sample.3': '3. Marcel Peeters, 88 – Alzheimer’s, Parkinson’s, Dutch-speaking',
+  'sample.4': '4. Lucas Martin, 14 – asthma, wasp allergy',
+  'sample.5': '5. Nadia Benali, 33 – healthy, pregnant',
+
+  // Pied de page, bouton flottant
+  'footer.idea': 'Original idea: Dr L. Bodson',
+  'footer.update': '🔄 Update',
+  'fab.label': 'See my QR code',
+
+  // Fenêtres plein écran
+  'overlay.emergency': 'MEDICAL EMERGENCY',
+  'overlay.tapToClose': 'Tap the screen to close',
+
+  // Caméra et lecture d'un QR code
+  'camera.needsHttps': 'The camera needs a secure page (https).',
+  'camera.needsHttpsScan': 'The camera needs a secure page (https). Use “Import from a photo”.',
+  'camera.denied': 'Camera access denied.',
+  'camera.unavailable': 'Camera unavailable.',
+  'scan.aim': 'Point at the QREDO QR code…',
+  'scan.notQredo': 'QR read, but it is not a QREDO QR. Try again…',
+
+  // Scanner de boîte de médicament
+  'medscan.readName': '🔤 Read the name',
+  'medscan.barcode': '↺ Barcode',
+  'medscan.loading': 'Loading…',
+  'medscan.aim': 'Point at the barcode or the small square (DataMatrix) on the box…',
+  'medscan.noEngine': 'Barcode reading unavailable. Point at the NAME of the medicine.',
+  'medscan.unknownCode': 'Code read, but this medicine is not in the database. Point at its NAME.',
+  'medscan.noBarcode': 'Barcode not found. Point at the NAME of the medicine.',
+  'medscan.attention': '{message} Put the name inside the frame, then press “Read the name”.',
+  'medscan.reading': 'Reading the name… (a few seconds the first time)',
+  'medscan.progress': 'Reading the name… {percent} %',
+  'medscan.notRecognized': 'Name not recognised. Move closer, add more light and try again — or type the name.',
+  'medscan.failed': 'Reading the name failed. Try again, or type the name.',
+  'medscan.foundByCode': 'Medicine recognised from the code on the box:',
+  'medscan.choose': 'Is it one of these medicines? Tap the right one:',
+  'medscan.added': '{name} added ✅',
+
+  // Carte portefeuille
+  'print.subtitle': 'Medical emergency',
+  'print.help': '✂️ Cut out the card along the dotted line (bank card size 85.6 × 54 mm).',
+};

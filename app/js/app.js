@@ -2,7 +2,7 @@
 // QREDO - Point d'entrée de l'application
 // ---------------------------------------------------------------------
 // Relie le formulaire, le QR code, le fond d'écran, l'import/export,
-// le scanner et l'installation sur le téléphone.
+// le scanner, l'installation sur le téléphone et la langue de l'interface.
 // =====================================================================
 
 import { buildQrText, byteLength, BYTE_TARGET, emptyDossier, isQredoText, parseQrText } from './core/qr-text.js';
@@ -24,8 +24,10 @@ import { drugDbMeta, loadDrugDb } from './core/drug-db.js';
 import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js';
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
+import { setupLanguageMenu } from './ui/lang-menu.js';
+import { applyTranslations, getLocale, onLanguageChange, t } from './i18n/i18n.js';
 
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.0.1';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -72,12 +74,8 @@ function refresh() {
   bar.style.width = Math.min(100, (bytes / BYTE_TARGET) * 100) + '%';
   const level = bytes <= 700 ? 'ok' : bytes <= BYTE_TARGET ? 'warn' : 'over';
   bar.dataset.level = level;
-  $('gauge-text').textContent = `${bytes} / ${BYTE_TARGET} octets`;
-  $('gauge-status').textContent = {
-    ok: '✅ Lecture facile',
-    warn: '🟠 Proche de la limite',
-    over: '🔴 Trop long : simplifiez',
-  }[level];
+  $('gauge-text').textContent = t('qr.bytes', { bytes, max: BYTE_TARGET });
+  $('gauge-status').textContent = t({ ok: 'qr.statusOk', warn: 'qr.statusWarn', over: 'qr.statusOver' }[level]);
 
   // QR code
   const canvas = $('qr-canvas');
@@ -95,7 +93,7 @@ function refresh() {
     currentQr = null;
     canvas.hidden = true;
     err.hidden = false;
-    err.textContent = 'Texte trop long pour un QR code. Retirez des informations.';
+    err.textContent = t('qr.tooLong');
     $('st-version').textContent = '–';
     $('st-modules').textContent = '–';
   }
@@ -121,7 +119,7 @@ function loadIntoForm(d) {
 // Fond d'écran
 // ---------------------------------------------------------------------
 function buildWallpaper() {
-  if (!currentQr) throw new Error('Pas de QR code à placer.');
+  if (!currentQr) throw new Error(t('wallpaper.noQr'));
   return renderWallpaper(currentQr, wallpaperSize($('sel-wallpaper').value), state.updated);
 }
 
@@ -139,7 +137,7 @@ const updateWallpaperPreview = debounce(() => {
 async function wallpaperFile() {
   const c = buildWallpaper();
   const blob = await canvasToBlob(c);
-  return new File([blob], `qredo-fond-ecran-${c.width}x${c.height}.png`, { type: 'image/png' });
+  return new File([blob], `${t('wallpaper.fileName')}-${c.width}x${c.height}.png`, { type: 'image/png' });
 }
 
 $('sel-wallpaper').addEventListener('change', updateWallpaperPreview);
@@ -148,7 +146,7 @@ $('btn-wallpaper').addEventListener('click', async () => {
   try {
     const f = await wallpaperFile();
     downloadBlob(f, f.name);
-    toast('Image enregistrée dans les téléchargements.');
+    toast(t('wallpaper.saved'));
   } catch (e) {
     toast(e.message);
   }
@@ -161,7 +159,7 @@ if (navigator.canShare && navigator.canShare({ files: [shareTest] })) {
   $('btn-share').addEventListener('click', async () => {
     try {
       const f = await wallpaperFile();
-      await navigator.share({ files: [f], title: 'QREDO – fond d’écran' });
+      await navigator.share({ files: [f], title: t('wallpaper.shareTitle') });
     } catch (e) {
       if (e.name !== 'AbortError') toast(e.message);
     }
@@ -210,7 +208,7 @@ if (navigator.share) {
     try {
       await navigator.share({
         title: 'QREDO',
-        text: 'Mon QR code médical d’urgence, gratuit. Installe-le aussi :',
+        text: t('invite.shareText'),
         url: APP_URL,
       });
     } catch (e) {
@@ -223,12 +221,12 @@ if (navigator.share) {
 // Import depuis un QR QREDO (caméra ou photo)
 // ---------------------------------------------------------------------
 function applyImport(text) {
-  if (!isQredoText(text)) return toast('Ce QR code n’est pas un QR QREDO.');
+  if (!isQredoText(text)) return toast(t('import.notQredo'));
   const d = parseQrText(text);
-  const who = [d.lastName, d.firstName].filter(Boolean).join(' ') || 'sans nom';
-  if (hasData(state) && !confirm(`Remplacer le dossier actuel par celui du QR (${who}) ?`)) return;
+  const who = [d.lastName, d.firstName].filter(Boolean).join(' ') || t('import.noName');
+  if (hasData(state) && !confirm(t('import.confirmQr', { who }))) return;
   loadIntoForm(d);
-  toast(`Dossier importé : ${who} ✅`);
+  toast(t('import.doneQr', { who }));
 }
 
 $('btn-scan').addEventListener('click', async () => {
@@ -239,7 +237,7 @@ $('btn-scan').addEventListener('click', async () => {
       return true;
     });
   } catch (e) {
-    toast(e.name === 'NotAllowedError' ? 'Accès à la caméra refusé.' : e.message);
+    toast(e.name === 'NotAllowedError' ? t('camera.denied') : e.message);
   }
 });
 
@@ -250,7 +248,7 @@ $('file-image').addEventListener('change', async (e) => {
   if (!file) return;
   try {
     const text = await decodeImageFile(file);
-    if (!text) return toast('Aucun QR code trouvé sur cette image.');
+    if (!text) return toast(t('import.noQrInImage'));
     applyImport(text);
   } catch (err) {
     toast(err.message);
@@ -268,9 +266,9 @@ $('file-import').addEventListener('change', async (e) => {
   if (!file) return;
   try {
     const d = await importDossierFile(file);
-    if (hasData(state) && !confirm('Remplacer le dossier actuel par celui du fichier ?')) return;
+    if (hasData(state) && !confirm(t('import.confirmFile'))) return;
     loadIntoForm(d);
-    toast('Dossier importé ✅');
+    toast(t('import.doneFile'));
   } catch (err) {
     toast(err.message);
   }
@@ -280,11 +278,11 @@ $('btn-print').addEventListener('click', () => {
   if (currentQr) printCard(currentQr, state);
 });
 
-// Patients de test fictifs
+// Patients de test fictifs (libellé traduit via data-i18n)
 SAMPLES.forEach((s, i) => {
   const o = document.createElement('option');
   o.value = i;
-  o.textContent = s.label;
+  o.dataset.i18n = s.labelKey;
   $('sel-sample').append(o);
 });
 
@@ -292,16 +290,16 @@ function loadSample(index) {
   const s = SAMPLES[index] || SAMPLES[0];
   loadIntoForm({ ...structuredClone(s.dossier), updated: today() });
   $('sel-sample').value = SAMPLES.indexOf(s);
-  toast(`Patient de test chargé : ${s.dossier.firstName} ${s.dossier.lastName}`);
+  toast(t('demo.loaded', { name: `${s.dossier.firstName} ${s.dossier.lastName}` }));
 }
 
 $('btn-sample').addEventListener('click', () => {
-  if (hasData(state) && !confirm('Remplacer votre dossier par ce patient de test ?')) return;
+  if (hasData(state) && !confirm(t('demo.confirmReplace'))) return;
   loadSample(+$('sel-sample').value);
 });
 
 $('btn-clear').addEventListener('click', () => {
-  if (!confirm('Effacer toutes les données de cet appareil ?')) return;
+  if (!confirm(t('demo.confirmClear'))) return;
   clearDossier();
   loadIntoForm(emptyDossier());
 });
@@ -325,7 +323,7 @@ $('btn-install').addEventListener('click', async () => {
   installPrompt = null;
   $('btn-install').hidden = true;
 });
-window.addEventListener('appinstalled', () => toast('QREDO est installé sur votre écran d’accueil 🎉'));
+window.addEventListener('appinstalled', () => toast(t('app.installed')));
 
 let swRegistration = null;
 if ('serviceWorker' in navigator && window.isSecureContext) {
@@ -350,7 +348,7 @@ if ('serviceWorker' in navigator && window.isSecureContext) {
 
 // Bouton "Mettre à jour" (pied de page)
 $('btn-update').addEventListener('click', async () => {
-  toast('Recherche de mise à jour…');
+  toast(t('app.checkingUpdate'));
   try {
     await swRegistration?.update();
   } catch {
@@ -368,6 +366,8 @@ document.addEventListener('visibilitychange', () => {
 // Démarrage
 // ---------------------------------------------------------------------
 $('app-version').textContent = `· v${APP_VERSION}`;
+applyTranslations(); // textes de la page dans la langue choisie
+setupLanguageMenu();
 setupForm(form, onFormChange);
 if (!state.updated) state.updated = today();
 fillForm(form, state);
@@ -392,8 +392,8 @@ setupMedCamera({
 function showDrugDbInfo() {
   const m = drugDbMeta();
   $('med-db-info').textContent = m
-    ? `Suggestions : base officielle belge SAM (AFMPS / eHealth), ${m.count.toLocaleString('fr-BE')} médicaments, mise à jour du ${m.generated}.`
-    : 'Base des médicaments indisponible (hors ligne ?) : la saisie libre fonctionne quand même.';
+    ? t('meds.dbInfo', { count: m.count.toLocaleString(getLocale()), date: m.generated })
+    : t('meds.dbUnavailable');
 }
 loadDrugDb().then((db) => {
   showDrugDbInfo();
@@ -413,9 +413,22 @@ if (sampleParam !== null) {
   const index = Math.max(1, parseInt(sampleParam, 10) || 1) - 1;
   const s = SAMPLES[index] || SAMPLES[0];
   const name = `${s.dossier.firstName} ${s.dossier.lastName}`;
-  if (!hasData(state) || confirm(`Remplacer le dossier actuel par le patient de test « ${name} » ?`)) {
+  if (!hasData(state) || confirm(t('demo.confirmLink', { name }))) {
     loadSample(index);
   }
   // On retire "?exemple" de l'adresse : un rechargement ne redemande pas
   history.replaceState(null, '', location.pathname);
 }
+
+// ---------------------------------------------------------------------
+// Changement de langue (menu "⋮") : tout est retraduit sur place.
+// Les données saisies ne bougent pas, et le QR code reste identique
+// (il est toujours écrit en anglais médical).
+// ---------------------------------------------------------------------
+onLanguageChange(() => {
+  applyTranslations(); // textes fixes, listes, cases à cocher, exemples
+  $('toast').hidden = true; // un message en cours est dans l'ancienne langue
+  refreshMedRows(); // "→ Molécule : …" sous chaque médicament
+  showDrugDbInfo();
+  refresh(); // jauge, message d'erreur, aperçu du fond d'écran
+});

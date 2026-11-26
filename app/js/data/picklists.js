@@ -1,105 +1,88 @@
 // =====================================================================
-// QREDO - Listes de référence (français -> anglais médical)
+// QREDO - Listes de référence (codes anglais médicaux)
 // ---------------------------------------------------------------------
-// Le patient choisit en français, le QR code est écrit en anglais.
-// "en" = code écrit dans le QR (ASCII, majuscules, 1 caractère = 1 octet)
-// "fr" = libellé affiché dans le formulaire
+// Le patient choisit dans sa langue, le QR code est écrit en anglais.
+// Chaque élément est le CODE écrit dans le QR (ASCII, majuscules,
+// 1 caractère = 1 octet). Le libellé affiché vient des traductions
+// (js/i18n/*.js), clé "<liste>.<CODE>" : ex. 'allergen.PENICILLIN'.
 // =====================================================================
 
-export const SEXES = [
-  { en: 'M', fr: 'Homme' },
-  { en: 'F', fr: 'Femme' },
-  { en: 'X', fr: 'Autre / non précisé' },
-];
+// Sexe (libellés : sex.<CODE>)
+export const SEXES = ['M', 'F', 'X'];
 
 export const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-// Sévérité de la réaction allergique
-export const REACTIONS = [
-  { en: '', fr: '— réaction ? —' },
-  { en: 'SEVERE', fr: 'Grave (œdème, gêne respiratoire)' },
-  { en: 'MODERATE', fr: 'Modérée' },
-  { en: 'MILD', fr: 'Légère (urticaire, démangeaisons)' },
-];
+// Sévérité de la réaction allergique (libellés : reaction.<CODE>)
+export const REACTIONS = ['SEVERE', 'MODERATE', 'MILD'];
 
-// Allergènes fréquents (le patient peut aussi taper autre chose)
+// Allergènes fréquents, le patient peut aussi taper autre chose (allergen.<CODE>)
 export const ALLERGENS = [
-  { en: 'PENICILLIN', fr: 'Pénicilline' },
-  { en: 'AMOXICILLIN', fr: 'Amoxicilline' },
-  { en: 'CEPHALOSPORINS', fr: 'Céphalosporines' },
-  { en: 'SULFONAMIDES', fr: 'Sulfamidés' },
-  { en: 'ASPIRIN', fr: 'Aspirine' },
-  { en: 'NSAID', fr: 'Anti-inflammatoires (AINS, ibuprofène)' },
-  { en: 'OPIOIDS', fr: 'Morphiniques / codéine' },
-  { en: 'IODINE CONTRAST', fr: 'Produit de contraste iodé' },
-  { en: 'LOCAL ANESTHETICS', fr: 'Anesthésiques locaux' },
-  { en: 'CHLORHEXIDINE', fr: 'Chlorhexidine' },
-  { en: 'LATEX', fr: 'Latex' },
-  { en: 'PEANUT', fr: 'Arachides / cacahuètes' },
-  { en: 'TREE NUTS', fr: 'Fruits à coque (noix, noisettes)' },
-  { en: 'SHELLFISH', fr: 'Crustacés / fruits de mer' },
-  { en: 'FISH', fr: 'Poisson' },
-  { en: 'EGG', fr: 'Œuf' },
-  { en: 'MILK', fr: 'Lait' },
-  { en: 'WHEAT/GLUTEN', fr: 'Blé / gluten' },
-  { en: 'BEE/WASP VENOM', fr: 'Piqûre d’abeille / guêpe' },
+  'PENICILLIN',
+  'AMOXICILLIN',
+  'CEPHALOSPORINS',
+  'SULFONAMIDES',
+  'ASPIRIN',
+  'NSAID',
+  'OPIOIDS',
+  'IODINE CONTRAST',
+  'LOCAL ANESTHETICS',
+  'CHLORHEXIDINE',
+  'LATEX',
+  'PEANUT',
+  'TREE NUTS',
+  'SHELLFISH',
+  'FISH',
+  'EGG',
+  'MILK',
+  'WHEAT/GLUTEN',
+  'BEE/WASP VENOM',
 ];
 
-// Implants et appareillages
+// Implants et appareillages (implant.<CODE>)
 export const IMPLANTS = [
-  { en: 'PACEMAKER', fr: 'Stimulateur cardiaque (pacemaker)' },
-  { en: 'ICD', fr: 'Défibrillateur implanté (DAI)' },
-  { en: 'MECHANICAL HEART VALVE', fr: 'Valve cardiaque mécanique' },
-  { en: 'CORONARY STENT', fr: 'Stent coronaire' },
-  { en: 'INSULIN PUMP', fr: 'Pompe à insuline' },
-  { en: 'NEUROSTIMULATOR', fr: 'Neurostimulateur' },
-  { en: 'COCHLEAR IMPLANT', fr: 'Implant cochléaire' },
-  { en: 'VP SHUNT', fr: 'Valve de dérivation (cerveau)' },
-  { en: 'JOINT PROSTHESIS', fr: 'Prothèse articulaire (hanche, genou)' },
-  { en: 'CPAP', fr: 'Appareil apnée du sommeil (CPAP)' },
+  'PACEMAKER',
+  'ICD',
+  'MECHANICAL HEART VALVE',
+  'CORONARY STENT',
+  'INSULIN PUMP',
+  'NEUROSTIMULATOR',
+  'COCHLEAR IMPLANT',
+  'VP SHUNT',
+  'JOINT PROSTHESIS',
+  'CPAP',
 ];
 
-// Maladies et situations importantes pour les secours
+// Maladies et situations importantes pour les secours (condition.<CODE>)
 export const CONDITIONS = [
-  { en: 'DIABETES TYPE 1', fr: 'Diabète type 1 (insuline)' },
-  { en: 'DIABETES TYPE 2', fr: 'Diabète type 2' },
-  { en: 'EPILEPSY', fr: 'Épilepsie' },
-  { en: 'HYPERTENSION', fr: 'Hypertension artérielle' },
-  { en: 'HEART FAILURE', fr: 'Insuffisance cardiaque' },
-  { en: 'CORONARY DISEASE', fr: 'Maladie coronaire / infarctus' },
-  { en: 'ATRIAL FIBRILLATION', fr: 'Fibrillation auriculaire' },
-  { en: 'PAST STROKE', fr: 'AVC ancien' },
-  { en: 'ASTHMA', fr: 'Asthme' },
-  { en: 'COPD', fr: 'BPCO (bronchite chronique)' },
-  { en: 'SLEEP APNEA', fr: 'Apnée du sommeil' },
-  { en: 'KIDNEY FAILURE', fr: 'Insuffisance rénale' },
-  { en: 'DIALYSIS', fr: 'Dialyse' },
-  { en: 'LIVER CIRRHOSIS', fr: 'Cirrhose du foie' },
-  { en: 'BLEEDING DISORDER', fr: 'Hémophilie / trouble de coagulation' },
-  { en: 'SICKLE CELL DISEASE', fr: 'Drépanocytose' },
-  { en: 'ADRENAL INSUFFICIENCY', fr: 'Insuffisance surrénalienne' },
-  { en: 'MYASTHENIA', fr: 'Myasthénie' },
-  { en: 'DEMENTIA', fr: 'Démence / Alzheimer' },
-  { en: 'PARKINSON', fr: 'Parkinson' },
-  { en: 'CANCER UNDER TREATMENT', fr: 'Cancer en traitement' },
-  { en: 'IMMUNOSUPPRESSED', fr: 'Immunodéprimé (greffe, chimio…)' },
-  { en: 'PREGNANT', fr: 'Enceinte' },
-  { en: 'HEARING IMPAIRED', fr: 'Malentendant' },
-  { en: 'VISUALLY IMPAIRED', fr: 'Malvoyant' },
+  'DIABETES TYPE 1',
+  'DIABETES TYPE 2',
+  'EPILEPSY',
+  'HYPERTENSION',
+  'HEART FAILURE',
+  'CORONARY DISEASE',
+  'ATRIAL FIBRILLATION',
+  'PAST STROKE',
+  'ASTHMA',
+  'COPD',
+  'SLEEP APNEA',
+  'KIDNEY FAILURE',
+  'DIALYSIS',
+  'LIVER CIRRHOSIS',
+  'BLEEDING DISORDER',
+  'SICKLE CELL DISEASE',
+  'ADRENAL INSUFFICIENCY',
+  'MYASTHENIA',
+  'DEMENTIA',
+  'PARKINSON',
+  'CANCER UNDER TREATMENT',
+  'IMMUNOSUPPRESSED',
+  'PREGNANT',
+  'HEARING IMPAIRED',
+  'VISUALLY IMPAIRED',
 ];
 
-// Lien avec la personne de contact
-export const RELATIONS = [
-  { en: '', fr: '— lien ? —' },
-  { en: 'SPOUSE', fr: 'Conjoint·e' },
-  { en: 'CHILD', fr: 'Enfant' },
-  { en: 'PARENT', fr: 'Parent' },
-  { en: 'SIBLING', fr: 'Frère / sœur' },
-  { en: 'FRIEND', fr: 'Ami·e' },
-  { en: 'NEIGHBOR', fr: 'Voisin·e' },
-  { en: 'CAREGIVER', fr: 'Aidant·e' },
-  { en: 'OTHER', fr: 'Autre' },
-];
+// Lien avec la personne de contact (relation.<CODE>)
+export const RELATIONS = ['SPOUSE', 'CHILD', 'PARENT', 'SIBLING', 'FRIEND', 'NEIGHBOR', 'CAREGIVER', 'OTHER'];
 
 // Noms commerciaux belges/français -> molécule (nom international, DCI)
 // Un "Coversyl" est inconnu à l'étranger, "PERINDOPRIL" est compris partout.

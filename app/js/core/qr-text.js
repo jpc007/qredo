@@ -9,14 +9,8 @@
 // Tout est converti en ASCII : 1 caractère = 1 octet dans le QR.
 // =====================================================================
 
-import {
-  ALLERGENS,
-  CONDITIONS,
-  IMPLANTS,
-  MED_BRAND_TO_INN,
-  REACTIONS,
-  RELATIONS,
-} from '../data/picklists.js';
+import { ALLERGENS, CONDITIONS, IMPLANTS, MED_BRAND_TO_INN, REACTIONS, RELATIONS } from '../data/picklists.js';
+import { t, translationsOf } from '../i18n/i18n.js';
 
 export const QR_HEADER = 'QREDO EMERGENCY MEDICAL ID';
 export const BYTE_TARGET = 900; // objectif de lisibilité sur écran de veille
@@ -117,20 +111,31 @@ function splitOther(s) {
 }
 
 // ---------------------------------------------------------------------
-// Dictionnaires de recherche français -> anglais
+// Dictionnaires de recherche (7 langues) -> anglais
 // ---------------------------------------------------------------------
 
+/** Ajoute un libellé ("Arachides / cacahuètes") et ses morceaux au dictionnaire. */
+function addAllergenLabel(map, label, code, replace) {
+  if (replace || !map.has(key(label))) map.set(key(label), code);
+  for (const part of label.split(/[/(),]/)) {
+    const k = key(part);
+    if (k.length > 2 && !map.has(k)) map.set(k, code);
+  }
+}
+
 // Allergènes : on accepte le libellé complet, un morceau ("arachides"),
-// ou directement le code anglais ("PEANUT").
+// le code anglais ("PEANUT"), et cela dans les 7 langues ("Erdnüsse",
+// "pinda's", "cacahuetes"…). Le français passe en premier, exactement
+// comme avant : le QR des dossiers existants ne change pas.
 const ALLERGEN_LOOKUP = (() => {
   const map = new Map();
-  for (const a of ALLERGENS) {
-    map.set(key(a.en), a.en);
-    map.set(key(a.fr), a.en);
-    for (const part of a.fr.split(/[/(),]/)) {
-      const k = key(part);
-      if (k.length > 2 && !map.has(k)) map.set(k, a.en);
-    }
+  const labels = (code) => translationsOf(`allergen.${code}`); // français en premier
+  for (const code of ALLERGENS) {
+    map.set(key(code), code);
+    addAllergenLabel(map, labels(code)[0], code, true);
+  }
+  for (const code of ALLERGENS) {
+    for (const label of labels(code).slice(1)) addAllergenLabel(map, label, code, false);
   }
   return map;
 })();
@@ -156,8 +161,7 @@ function doseToEn(dose, ascii) {
   return ascii ? c.toUpperCase() : c;
 }
 
-const frLabel = (list, en) => list.find((x) => x.en === en)?.fr ?? en;
-const isCode = (list, en) => list.some((x) => x.en === en);
+const isCode = (list, code) => list.includes(code);
 
 // ---------------------------------------------------------------------
 // Dossier -> texte du QR
@@ -256,7 +260,7 @@ export function isQredoText(text) {
 
 export function parseQrText(text) {
   if (!isQredoText(text)) {
-    throw new Error('Ce QR code n’est pas un QR code QREDO.');
+    throw new Error(t('import.notQredo'));
   }
   const d = emptyDossier();
   d.contacts = [];
@@ -302,7 +306,8 @@ export function parseQrText(text) {
           // Anciens QR : "ANAPHYLAXIS" n'existe plus -> converti en "SEVERE"
           const r = a[2] === 'ANAPHYLAXIS' ? 'SEVERE' : a[2];
           const reaction = isCode(REACTIONS, r) ? r : '';
-          const label = isCode(ALLERGENS, sub) ? frLabel(ALLERGENS, sub) : sub;
+          // Code connu -> libellé dans la langue de l'utilisateur
+          const label = isCode(ALLERGENS, sub) ? t(`allergen.${sub}`) : sub;
           d.allergies.push({ substance: label, reaction });
         }
         break;

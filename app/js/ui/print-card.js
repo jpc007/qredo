@@ -3,7 +3,8 @@
 // ---------------------------------------------------------------------
 // Utile pour les personnes sans smartphone, ou si le téléphone est
 // déchargé. La mise en page d'impression est dans css/style.css
-// (@media print).
+// (@media print). "EMERGENCY MEDICAL ID" reste en anglais ; le sous-titre
+// et l'aide au découpage sont traduits (data-i18n dans index.html).
 // =====================================================================
 
 import { qrToDataUrl } from '../core/qr-render.js';

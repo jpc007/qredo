@@ -3,12 +3,14 @@
 // ---------------------------------------------------------------------
 // Mise en page pensée pour l'écran verrouillé :
 //  - QR centré verticalement : le haut reste libre pour l'horloge ;
-//  - bandeau rouge "EMERGENCY MEDICAL ID" bien visible ;
+//  - bandeau rouge "EMERGENCY MEDICAL ID" bien visible (toujours en
+//    anglais, compris partout), 2e ligne dans la langue de l'utilisateur ;
 //  - QR sur fond blanc avec marge (indispensable pour la lecture) ;
 //  - le bas reste libre pour les raccourcis (téléphone, caméra).
 // =====================================================================
 
 import { drawQr } from '../core/qr-render.js';
+import { t } from '../i18n/i18n.js';
 
 export const WALLPAPER_PRESETS = {
   samsung: { w: 1080, h: 2340, label: 'samsung' },
@@ -73,7 +75,7 @@ export function renderWallpaper(qr, { w, h }, updated) {
   ctx.font = font(800, w * 0.052);
   ctx.fillText('✚ EMERGENCY MEDICAL ID', w / 2, bannerY + bannerH * 0.38);
   ctx.font = font(500, w * 0.03);
-  ctx.fillText('URGENCE MÉDICALE · SCAN ME', w / 2, bannerY + bannerH * 0.76);
+  ctx.fillText(t('wallpaper.subtitle'), w / 2, bannerY + bannerH * 0.76);
 
   // Carré blanc + QR
   ctx.fillStyle = '#fff';
@@ -81,7 +83,7 @@ export function renderWallpaper(qr, { w, h }, updated) {
   ctx.fill();
   drawQr(ctx, qr, x, cardY, cardW, { quiet: 4 }); // marge de 4 carrés : norme QR
 
-  // Légende
+  // Légende (en anglais : destinée aux secours, quel que soit le pays)
   ctx.fillStyle = 'rgba(255,255,255,0.85)';
   ctx.font = font(600, w * 0.034);
   ctx.fillText('Scan with any phone camera – no unlock needed', w / 2, cardY + cardW + h * 0.028);

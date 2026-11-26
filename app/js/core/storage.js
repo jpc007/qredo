@@ -7,6 +7,7 @@
 // =====================================================================
 
 import { emptyDossier, medToEn } from './qr-text.js';
+import { t } from '../i18n/i18n.js';
 
 const STORAGE_KEY = 'qredo.dossier.v1';
 const FILE_FORMAT = 'QREDO-DOSSIER';
@@ -54,15 +55,21 @@ export function clearDossier() {
 export function exportDossierFile(d) {
   const payload = { format: FILE_FORMAT, version: 1, exported: new Date().toISOString(), dossier: d };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const name = `qredo-${(d.lastName || 'dossier').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${today()}.json`;
+  const who = (d.lastName || t('transfer.defaultFileName')).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const name = `qredo-${who}-${today()}.json`;
   downloadBlob(blob, name);
 }
 
 /** Lit un fichier .json choisi par l'utilisateur. */
 export async function importDossierFile(file) {
-  const data = JSON.parse(await file.text());
+  let data = null;
+  try {
+    data = JSON.parse(await file.text());
+  } catch {
+    /* pas du JSON : même message ci-dessous */
+  }
   if (data?.format !== FILE_FORMAT || !data.dossier) {
-    throw new Error('Ce fichier n’est pas une sauvegarde QREDO.');
+    throw new Error(t('import.notBackup'));
   }
   return normalizeDossier(data.dossier);
 }

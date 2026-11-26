@@ -1,0 +1,278 @@
+// =====================================================================
+// QREDO - Textes de l'interface : NÉERLANDAIS (Nederlands, Belgique)
+// ---------------------------------------------------------------------
+// Mêmes clés que fr.js (langue de référence).
+// =====================================================================
+
+export default {
+  // En-tête et page
+  'app.title': 'QREDO – Mijn medische nood-QR-code',
+  'app.description': 'Maak uw medische nood-QR-code. Uw gegevens blijven op uw toestel.',
+  'app.tagline': 'Mijn medische nood-QR-code',
+  'app.install': '📲 Installeren',
+  'app.privacy': '🔒 Uw gegevens blijven <strong>op dit toestel</strong>. Er wordt niets via internet verstuurd.',
+  'app.installed': 'QREDO staat nu op uw startscherm 🎉',
+  'app.checkingUpdate': 'Zoeken naar updates…',
+
+  // Menu "⋮"
+  'menu.button': 'Menu: taal kiezen',
+  'menu.language': '🌐 Taal',
+
+  // Identité
+  'identity.title': '👤 Identiteit',
+  'identity.lastName': 'Naam',
+  'identity.firstName': 'Voornaam',
+  'identity.sex': 'Geslacht',
+  'identity.dob': 'Geboortedatum',
+  'identity.address': 'Adres',
+  'identity.addressPlaceholder': 'Straat, nr., postcode, gemeente',
+  'identity.languages': 'Gesproken talen',
+  'identity.languagesExample': '(bv. NL, FR)',
+  'identity.languagesPlaceholder': 'NL',
+  'sex.M': 'Man',
+  'sex.F': 'Vrouw',
+  'sex.X': 'Anders / niet vermeld',
+
+  // Allergies
+  'allergies.title': '⚠️ Allergieën',
+  'allergies.none': 'Geen gekende allergieën',
+  'allergies.add': '＋ Allergie toevoegen',
+  'allergies.placeholder': 'Stof (bv. Penicilline)',
+  'reaction.choose': '— reactie? —',
+  'reaction.SEVERE': 'Ernstig (zwelling, ademnood)',
+  'reaction.MODERATE': 'Matig',
+  'reaction.MILD': 'Licht (netelroos, jeuk)',
+  'allergen.PENICILLIN': 'Penicilline',
+  'allergen.AMOXICILLIN': 'Amoxicilline',
+  'allergen.CEPHALOSPORINS': 'Cefalosporines',
+  'allergen.SULFONAMIDES': 'Sulfonamiden',
+  'allergen.ASPIRIN': 'Aspirine',
+  'allergen.NSAID': 'Ontstekingsremmers (NSAID’s, ibuprofen)',
+  'allergen.OPIOIDS': 'Opioïden / codeïne',
+  'allergen.IODINE CONTRAST': 'Jodiumhoudend contrastmiddel',
+  'allergen.LOCAL ANESTHETICS': 'Lokale verdoving',
+  'allergen.CHLORHEXIDINE': 'Chloorhexidine',
+  'allergen.LATEX': 'Latex',
+  'allergen.PEANUT': 'Pinda’s / pindanoten',
+  'allergen.TREE NUTS': 'Noten (walnoten, hazelnoten)',
+  'allergen.SHELLFISH': 'Schaaldieren / zeevruchten',
+  'allergen.FISH': 'Vis',
+  'allergen.EGG': 'Ei',
+  'allergen.MILK': 'Melk',
+  'allergen.WHEAT/GLUTEN': 'Tarwe / gluten',
+  'allergen.BEE/WASP VENOM': 'Bijensteek / wespensteek',
+
+  // Implants
+  'implants.title': '🫀 Implantaten en toestellen',
+  'implants.other': 'Andere',
+  'implants.otherHint': '(gescheiden door komma’s)',
+  'implant.PACEMAKER': 'Pacemaker',
+  'implant.ICD': 'Ingeplante defibrillator (ICD)',
+  'implant.MECHANICAL HEART VALVE': 'Mechanische hartklep',
+  'implant.CORONARY STENT': 'Coronaire stent',
+  'implant.INSULIN PUMP': 'Insulinepomp',
+  'implant.NEUROSTIMULATOR': 'Neurostimulator',
+  'implant.COCHLEAR IMPLANT': 'Cochleair implantaat',
+  'implant.VP SHUNT': 'Hersendrain (VP-shunt)',
+  'implant.JOINT PROSTHESIS': 'Gewrichtsprothese (heup, knie)',
+  'implant.CPAP': 'Slaapapneutoestel (CPAP)',
+
+  // Maladies
+  'conditions.title': '🩺 Aandoeningen',
+  'conditions.other': 'Andere',
+  'conditions.otherHint': '(gescheiden door komma’s)',
+  'condition.DIABETES TYPE 1': 'Diabetes type 1 (insuline)',
+  'condition.DIABETES TYPE 2': 'Diabetes type 2',
+  'condition.EPILEPSY': 'Epilepsie',
+  'condition.HYPERTENSION': 'Hoge bloeddruk',
+  'condition.HEART FAILURE': 'Hartfalen',
+  'condition.CORONARY DISEASE': 'Kransslagaderziekte / hartinfarct',
+  'condition.ATRIAL FIBRILLATION': 'Voorkamerfibrillatie',
+  'condition.PAST STROKE': 'Vroeger beroerte',
+  'condition.ASTHMA': 'Astma',
+  'condition.COPD': 'COPD (chronische bronchitis)',
+  'condition.SLEEP APNEA': 'Slaapapneu',
+  'condition.KIDNEY FAILURE': 'Nierfalen',
+  'condition.DIALYSIS': 'Dialyse',
+  'condition.LIVER CIRRHOSIS': 'Levercirrose',
+  'condition.BLEEDING DISORDER': 'Hemofilie / stollingsstoornis',
+  'condition.SICKLE CELL DISEASE': 'Sikkelcelziekte',
+  'condition.ADRENAL INSUFFICIENCY': 'Bijnierinsufficiëntie',
+  'condition.MYASTHENIA': 'Myasthenie',
+  'condition.DEMENTIA': 'Dementie / alzheimer',
+  'condition.PARKINSON': 'Parkinson',
+  'condition.CANCER UNDER TREATMENT': 'Kanker in behandeling',
+  'condition.IMMUNOSUPPRESSED': 'Verzwakte afweer (transplantatie, chemo…)',
+  'condition.PREGNANT': 'Zwanger',
+  'condition.HEARING IMPAIRED': 'Slechthorend',
+  'condition.VISUALLY IMPAIRED': 'Slechtziend',
+
+  // Médicaments
+  'meds.title': '💊 Geneesmiddelen',
+  'meds.hint': 'Typ de naam die u kent (bv. Medrol): de werkzame stof verschijnt eronder, en die komt in de QR-code.',
+  'meds.scan': '📷 Doosje scannen',
+  'meds.add': '＋ Geneesmiddel toevoegen',
+  'meds.namePlaceholder': 'Geneesmiddel (bv. Medrol)',
+  'meds.dosePlaceholder': 'Dosis (bv. 4 mg)',
+  'meds.molecule': '→ Werkzame stof: {inn}',
+  'meds.notFound': 'Werkzame stof niet gevonden: de naam komt zoals hij is in de QR-code.',
+  'meds.inactive': 'niet meer verkrijgbaar',
+  'meds.dbInfo':
+    'Suggesties: officiële Belgische SAM-databank (FAGG / eHealth), {count} geneesmiddelen, bijgewerkt op {date}.',
+  'meds.dbUnavailable': 'Geneesmiddelendatabank niet beschikbaar (offline?): vrij typen werkt wel.',
+  'common.remove': 'Verwijderen',
+  'common.close': 'Sluiten',
+
+  // Volontés
+  'wishes.title': '📜 Wilsverklaringen',
+  'wishes.advanceDirective': 'Voorafgaande wilsverklaring',
+  'wishes.date': 'Datum',
+  'wishes.refuseTransfusion': 'Weigert bloedtransfusie',
+  'wishes.dnr': 'Niet reanimeren (DNR)',
+
+  // Mesures
+  'measures.title': '📏 Metingen',
+  'measures.blood': 'Bloedgroep',
+  'measures.bloodUnknown': 'Onbekend',
+  'measures.weight': 'Gewicht (kg)',
+  'measures.height': 'Lengte (cm)',
+
+  // Personnes à prévenir
+  'contacts.title': '📞 Te verwittigen personen',
+  'contacts.name': 'Naam',
+  'contacts.relation': 'Relatie',
+  'contacts.phone': 'Telefoon',
+  'relation.choose': '— relatie? —',
+  'relation.SPOUSE': 'Partner',
+  'relation.CHILD': 'Kind',
+  'relation.PARENT': 'Ouder',
+  'relation.SIBLING': 'Broer / zus',
+  'relation.FRIEND': 'Vriend(in)',
+  'relation.NEIGHBOR': 'Buur',
+  'relation.CAREGIVER': 'Mantelzorger',
+  'relation.OTHER': 'Andere',
+
+  // Médecin traitant
+  'gp.title': '👨‍⚕️ Huisarts',
+  'gp.name': 'Naam',
+  'gp.phone': 'Telefoon',
+
+  // Remarque
+  'notes.title': '📝 Opmerking',
+  'notes.label': 'Kort, liefst in het Engels',
+  'notes.placeholder': 'bv. Reduced mobility',
+
+  // Panneau du QR code
+  'qr.title': 'Mijn medische QR-code',
+  'qr.canvasLabel': 'Medische QR-code',
+  'qr.gaugeLabel': 'Grootte van de QR-code',
+  'qr.bytes': '{bytes} / {max} bytes',
+  'qr.statusOk': '✅ Goed leesbaar',
+  'qr.statusWarn': '🟠 Bijna aan de grens',
+  'qr.statusOver': '🔴 Te lang: vereenvoudig',
+  'qr.chars': 'Tekens',
+  'qr.version': 'QR-versie',
+  'qr.modules': 'Vakjes per zijde',
+  'qr.saved': 'Bytes bespaard zonder accenten',
+  'qr.fullscreen': '🔍 Groot tonen',
+  'qr.showText': 'Gecodeerde tekst bekijken',
+  'qr.tooLong': 'Tekst te lang voor een QR-code. Verwijder wat informatie.',
+
+  // Fond d'écran
+  'wallpaper.title': '📱 Achtergrond vergrendelscherm',
+  'wallpaper.model': 'Model van de telefoon',
+  'wallpaper.auto': 'Dit toestel (automatisch)',
+  'wallpaper.generic': 'Standaard Android (1080 × 2400)',
+  'wallpaper.previewAlt': 'Voorbeeld van de achtergrond',
+  'wallpaper.download': '⬇️ Downloaden',
+  'wallpaper.share': '📤 Delen',
+  'wallpaper.help':
+    'Daarna: Galerij → de afbeelding → ⋮ → <em>Instellen als achtergrond</em> → <em>Vergrendelscherm</em>.',
+  'wallpaper.subtitle': 'MEDISCHE NOOD · SCAN ME',
+  'wallpaper.saved': 'Afbeelding opgeslagen in uw downloads.',
+  'wallpaper.shareTitle': 'QREDO – achtergrond',
+  'wallpaper.fileName': 'qredo-achtergrond',
+  'wallpaper.noQr': 'Geen QR-code om te plaatsen.',
+
+  // Offrir l'application
+  'invite.title': '🤝 QREDO aan een naaste geven',
+  'invite.hint': 'Het is gratis: laat deze QR-code scannen om de app te installeren.',
+  'invite.show': '📲 QR-code van de app tonen',
+  'invite.shareLink': '📤 Link delen (WhatsApp, sms…)',
+  'invite.shareText': 'Mijn medische nood-QR-code, gratis. Installeer hem ook:',
+  'invite.banner': 'QREDO · gratis · free',
+  'invite.scanHint': 'Scan met de camera om QREDO te installeren',
+
+  // Transférer / sauvegarder
+  'transfer.title': '🔄 Overzetten / bewaren',
+  'transfer.scan': '📷 Importeren door een QREDO-QR te scannen',
+  'transfer.scanImage': '🖼️ Importeren uit een foto van de QR',
+  'transfer.print': '🖨️ Mijn portefeuillekaart afdrukken',
+  'transfer.export': '💾 Mijn dossier exporteren (bestand)',
+  'transfer.import': '📂 Een dossier importeren (bestand)',
+  'transfer.defaultFileName': 'dossier',
+
+  // Import
+  'import.notQredo': 'Deze QR-code is geen QREDO-QR.',
+  'import.noName': 'zonder naam',
+  'import.confirmQr': 'Het huidige dossier vervangen door dat van de QR ({who})?',
+  'import.doneQr': 'Dossier geïmporteerd: {who} ✅',
+  'import.noQrInImage': 'Geen QR-code gevonden op deze afbeelding.',
+  'import.confirmFile': 'Het huidige dossier vervangen door dat van het bestand?',
+  'import.doneFile': 'Dossier geïmporteerd ✅',
+  'import.notBackup': 'Dit bestand is geen QREDO-back-up.',
+
+  // Démonstration
+  'demo.title': '🧪 Demonstratie',
+  'demo.patient': 'Testpatiënt (fictief)',
+  'demo.load': 'Voorbeeld laden',
+  'demo.clear': 'Alles wissen',
+  'demo.loaded': 'Testpatiënt geladen: {name}',
+  'demo.confirmReplace': 'Uw dossier vervangen door deze testpatiënt?',
+  'demo.confirmLink': 'Het huidige dossier vervangen door testpatiënt “{name}”?',
+  'demo.confirmClear': 'Alle gegevens op dit toestel wissen?',
+  'sample.1': '1. Jean-Pierre Dupont, 51 jaar – hartpatiënt, bloedverdunners',
+  'sample.2': '2. Françoise Lemaître, 41 jaar – diabetes type 1, epilepsie',
+  'sample.3': '3. Marcel Peeters, 88 jaar – alzheimer, parkinson, Nederlandstalig',
+  'sample.4': '4. Lucas Martin, 14 jaar – astma, allergie voor wespen',
+  'sample.5': '5. Nadia Benali, 33 jaar – gezond, zwanger',
+
+  // Pied de page, bouton flottant
+  'footer.idea': 'Oorspronkelijk idee: Dr. L. Bodson',
+  'footer.update': '🔄 Bijwerken',
+  'fab.label': 'Mijn QR-code bekijken',
+
+  // Fenêtres plein écran
+  'overlay.emergency': 'MEDISCHE NOOD',
+  'overlay.tapToClose': 'Tik op het scherm om te sluiten',
+
+  // Caméra et lecture d'un QR code
+  'camera.needsHttps': 'De camera vereist een beveiligde pagina (https).',
+  'camera.needsHttpsScan': 'De camera vereist een beveiligde pagina (https). Gebruik “Importeren uit een foto”.',
+  'camera.denied': 'Toegang tot de camera geweigerd.',
+  'camera.unavailable': 'Camera niet beschikbaar.',
+  'scan.aim': 'Richt op de QREDO-QR-code…',
+  'scan.notQredo': 'QR gelezen, maar het is geen QREDO-QR. Probeer opnieuw…',
+
+  // Scanner de boîte de médicament
+  'medscan.readName': '🔤 Naam lezen',
+  'medscan.barcode': '↺ Streepjescode',
+  'medscan.loading': 'Laden…',
+  'medscan.aim': 'Richt op de streepjescode of het kleine vierkantje (DataMatrix) van het doosje…',
+  'medscan.noEngine': 'Streepjescodes lezen niet beschikbaar. Richt op de NAAM van het geneesmiddel.',
+  'medscan.unknownCode': 'Code gelezen, maar dit geneesmiddel staat niet in de databank. Richt op de NAAM.',
+  'medscan.noBarcode': 'Geen streepjescode gevonden. Richt op de NAAM van het geneesmiddel.',
+  'medscan.attention': '{message} Plaats de naam in het kader en druk dan op “Naam lezen”.',
+  'medscan.reading': 'Naam lezen… (de eerste keer enkele seconden)',
+  'medscan.progress': 'Naam lezen… {percent} %',
+  'medscan.notRecognized':
+    'Naam niet herkend. Kom dichterbij, zorg voor meer licht en probeer opnieuw — of typ de naam.',
+  'medscan.failed': 'Het lezen van de naam is mislukt. Probeer opnieuw, of typ de naam.',
+  'medscan.foundByCode': 'Geneesmiddel herkend dankzij de code op het doosje:',
+  'medscan.choose': 'Is het een van deze geneesmiddelen? Tik op het juiste:',
+  'medscan.added': '{name} toegevoegd ✅',
+
+  // Carte portefeuille
+  'print.subtitle': 'Medische nood',
+  'print.help': '✂️ Knip de kaart uit langs de stippellijn (formaat bankkaart 85,6 × 54 mm).',
+};

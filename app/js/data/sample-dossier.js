@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------
 // Accès direct : .../?exemple=1 … ?exemple=5  (ou liste "Démonstration")
 // Les numéros de téléphone sont fictifs (+32 400 …).
+// Le libellé de chaque patient est traduit : clé labelKey (js/i18n/*.js).
 // =====================================================================
 
 const base = {
@@ -31,7 +32,7 @@ const base = {
 
 export const SAMPLES = [
   {
-    label: '1. Jean-Pierre Dupont, 51 ans – cardiaque, anticoagulé',
+    labelKey: 'sample.1',
     dossier: {
       ...base,
       lastName: 'Dupont',
@@ -70,7 +71,7 @@ export const SAMPLES = [
     },
   },
   {
-    label: '2. Françoise Lemaître, 41 ans – diabète type 1, épilepsie',
+    labelKey: 'sample.2',
     dossier: {
       ...base,
       lastName: 'Lemaître',
@@ -102,7 +103,7 @@ export const SAMPLES = [
     },
   },
   {
-    label: '3. Marcel Peeters, 88 ans – Alzheimer, Parkinson, néerlandophone',
+    labelKey: 'sample.3',
     dossier: {
       ...base,
       lastName: 'Peeters',
@@ -135,7 +136,7 @@ export const SAMPLES = [
     },
   },
   {
-    label: '4. Lucas Martin, 14 ans – asthme, allergie aux guêpes',
+    labelKey: 'sample.4',
     dossier: {
       ...base,
       lastName: 'Martin',
@@ -166,7 +167,7 @@ export const SAMPLES = [
     },
   },
   {
-    label: '5. Nadia Benali, 33 ans – en bonne santé, enceinte',
+    labelKey: 'sample.5',
     dossier: {
       ...base,
       lastName: 'Benali',

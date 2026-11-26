@@ -11,6 +11,7 @@
 
 import { isMobileDevice } from '../core/device.js';
 import { allDrugs, findDrugByCodes, loadDrugCodes, loadDrugDb } from '../core/drug-db.js';
+import { t } from '../i18n/i18n.js';
 
 const BARCODE_TIMEOUT_MS = 8000; // ensuite : invitation à lire le nom
 const SCAN_INTERVAL_MS = 250;
@@ -49,7 +50,7 @@ function setMode(mode) {
 async function openMedCamera({ onDrug, toast }) {
   if (!isMobileDevice()) return; // sécurité : jamais sur ordinateur
   if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
-    toast('La caméra nécessite une page sécurisée (https).');
+    toast(t('camera.needsHttps'));
     return;
   }
   let stream;
@@ -59,7 +60,7 @@ async function openMedCamera({ onDrug, toast }) {
       audio: false,
     });
   } catch (e) {
-    toast(e.name === 'NotAllowedError' ? 'Accès à la caméra refusé.' : 'Caméra indisponible.');
+    toast(t(e.name === 'NotAllowedError' ? 'camera.denied' : 'camera.unavailable'));
     return;
   }
   const video = $('medscan-video');
@@ -82,10 +83,10 @@ async function openMedCamera({ onDrug, toast }) {
     })
     .catch(() => {
       // Module code-barres indisponible : on passe directement à la lecture du nom
-      if (session) attention('Lecture des codes-barres indisponible. Visez le NOM du médicament.');
+      if (session) attention(t('medscan.noEngine'));
     });
   setMode('barcode');
-  setStatus('Chargement…');
+  setStatus(t('medscan.loading'));
 }
 
 export function closeMedCamera() {
@@ -106,7 +107,7 @@ function restartBarcode() {
   clearTimeout(session.timer);
   $('medscan-results').innerHTML = '';
   setMode('barcode');
-  setStatus('Visez le code-barres ou le petit carré (DataMatrix) de la boîte…');
+  setStatus(t('medscan.aim'));
   session.deadline = Date.now() + BARCODE_TIMEOUT_MS;
   session.unknownCode = false;
   scanLoop();
@@ -132,8 +133,8 @@ async function scanLoop() {
     }
   }
   if (session !== s) return;
-  if (s.unknownCode) return attention('Code lu, mais ce médicament n’est pas dans la base. Visez son NOM.');
-  if (Date.now() > s.deadline) return attention('Code-barres non trouvé. Visez le NOM du médicament.');
+  if (s.unknownCode) return attention(t('medscan.unknownCode'));
+  if (Date.now() > s.deadline) return attention(t('medscan.noBarcode'));
   s.timer = setTimeout(scanLoop, SCAN_INTERVAL_MS);
 }
 
@@ -142,13 +143,23 @@ function attention(message) {
   if (!session) return;
   clearTimeout(session.timer);
   setMode('attention');
-  setStatus(`${message} Placez le nom dans le cadre, puis appuyez sur « Lire le nom ».`, 'warn');
+  setStatus(t('medscan.attention', { message }), 'warn');
   navigator.vibrate?.([120, 80, 120]);
 }
 
 // ---------------------------------------------------------------------
 // Étape 2 : lecture du nom (OCR)
 // ---------------------------------------------------------------------
+/** Image entière de la caméra dans un canvas. */
+function captureFull() {
+  const video = $('medscan-video');
+  const c = document.createElement('canvas');
+  c.width = video.videoWidth;
+  c.height = video.videoHeight;
+  c.getContext('2d').drawImage(video, 0, 0);
+  return c;
+}
+
 /** Capture la zone du cadre (en pixels de la vidéo) dans un canvas. */
 function captureFrame() {
   const video = $('medscan-video');
@@ -175,27 +186,32 @@ async function readName() {
   const s = session;
   if (!s) return;
   clearTimeout(s.timer);
+  // Les deux images sont prises au même instant : la zone du cadre, puis l'image entière
   const canvas = captureFrame();
+  const full = captureFull();
   setMode('ocr');
-  setStatus('Lecture du nom… (la première fois, quelques secondes)');
+  setStatus(t('medscan.reading'));
   try {
     s.ocr ??= await import('../core/ocr.js');
     const db = await loadDrugDb();
-    const text = await s.ocr.recognizeText(canvas, {
-      onProgress: (p) => session === s && setStatus(`Lecture du nom… ${Math.round(p * 100)} %`),
-    });
+    const onProgress = (p) => session === s && setStatus(t('medscan.progress', { percent: Math.round(p * 100) }));
+    const read = async (c) => (db ? s.ocr.matchDrugs(await s.ocr.recognizeText(c, { onProgress }), allDrugs(), { limit: 5 }) : []);
+    let matches = await read(canvas);
+    // Rien dans le cadre (nom mal visé) : on relit l'image entière
+    if (!matches.length && session === s) matches = await read(full);
     if (session !== s) return;
-    const matches = db ? s.ocr.matchDrugs(text, allDrugs(), { limit: 5 }) : [];
+    // On n'affiche que les propositions proches de la meilleure (pas de bruit)
+    if (matches.length) matches = matches.filter((m) => m.score >= matches[0].score * 0.7);
     if (!matches.length) {
       setMode('attention');
-      setStatus('Nom non reconnu. Rapprochez-vous, ajoutez de la lumière, puis réessayez — ou tapez le nom.', 'warn');
+      setStatus(t('medscan.notRecognized'), 'warn');
       return;
     }
     showResults(matches, 'ocr');
   } catch {
     if (session !== s) return;
     setMode('attention');
-    setStatus('La lecture du nom a échoué. Réessayez, ou tapez le nom.', 'warn');
+    setStatus(t('medscan.failed'), 'warn');
   }
 }
 
@@ -208,12 +224,7 @@ function showResults(matches, via) {
   clearTimeout(s.timer);
   setMode('results');
   navigator.vibrate?.(60);
-  setStatus(
-    via === 'barcode'
-      ? 'Médicament reconnu grâce au code de la boîte :'
-      : 'Est-ce l’un de ces médicaments ? Touchez le bon :',
-    'ok',
-  );
+  setStatus(t(via === 'barcode' ? 'medscan.foundByCode' : 'medscan.choose'), 'ok');
   const list = $('medscan-results');
   list.innerHTML = '';
   for (const { product: p } of matches) {
@@ -223,13 +234,13 @@ function showResults(matches, via) {
     const strong = document.createElement('strong');
     strong.textContent = p.name;
     const small = document.createElement('small');
-    small.textContent = `${p.inn}${p.inactive ? ' · plus commercialisé' : ''}`;
+    small.textContent = p.inactive ? `${p.inn} · ${t('meds.inactive')}` : p.inn;
     b.append(strong, small);
     b.addEventListener('click', () => {
       const { onDrug, toast } = s;
       closeMedCamera();
       onDrug(p);
-      toast(`${p.name} ajouté ✅`);
+      toast(t('medscan.added', { name: p.name }));
     });
     list.append(b);
   }

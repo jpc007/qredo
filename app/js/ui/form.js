@@ -5,6 +5,8 @@
 // Cases à cocher  : data-group="implants|conditions" + value="CODE"
 // Lignes ajoutées : allergies et médicaments (data-k="...")
 // Contacts        : data-contact="0|1" + data-k="name|relation|phone"
+// Les libellés portent une clé de traduction (data-i18n) : au changement
+// de langue, seul le texte change ; valeurs et cases cochées restent.
 // =====================================================================
 
 import {
@@ -19,6 +21,7 @@ import {
 } from '../data/picklists.js';
 import { emptyDossier, medToEn } from '../core/qr-text.js';
 import { isDrugDbLoaded, resolveDrug, searchDrugs } from '../core/drug-db.js';
+import { applyTranslations, t } from '../i18n/i18n.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -30,37 +33,56 @@ function option(value, label) {
   return o;
 }
 
-function buildChecks(container, list, group) {
+/** Option dont le libellé est traduit (clé i18n) ; la valeur reste le code anglais. */
+function translatedOption(value, key) {
+  const o = option(value, t(key));
+  o.dataset.i18n = key;
+  return o;
+}
+
+/** Remplit une liste : option vide (traduite si emptyKey), puis un code par option. */
+function fillSelect(sel, emptyKey, codes, prefix) {
+  sel.append(emptyKey ? translatedOption('', emptyKey) : option('', '—'));
+  codes.forEach((code) => sel.append(translatedOption(code, `${prefix}.${code}`)));
+}
+
+function buildChecks(container, codes, group, prefix) {
   container.innerHTML = '';
-  for (const item of list) {
+  for (const code of codes) {
     const label = document.createElement('label');
     label.className = 'check';
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.dataset.group = group;
-    input.value = item.en;
-    label.append(input, ' ' + item.fr);
+    input.value = code;
+    const text = document.createElement('span');
+    text.dataset.i18n = `${prefix}.${code}`;
+    label.append(input, ' ', text);
     container.append(label);
   }
+  applyTranslations(container);
 }
 
 /** Prépare listes déroulantes, cases à cocher et suggestions. */
 export function setupForm(form, onChange) {
-  const sex = $('#sel-sex');
-  sex.append(option('', '—'));
-  SEXES.forEach((s) => sex.append(option(s.en, s.fr)));
+  fillSelect($('#sel-sex'), null, SEXES, 'sex');
 
   const blood = $('#sel-blood');
-  blood.append(option('', 'Inconnu'));
+  blood.append(translatedOption('', 'measures.bloodUnknown'));
   BLOOD_GROUPS.forEach((b) => blood.append(option(b, b)));
 
-  $$('.sel-relation').forEach((sel) => RELATIONS.forEach((r) => sel.append(option(r.en, r.fr))));
+  $$('.sel-relation').forEach((sel) => fillSelect(sel, 'relation.choose', RELATIONS, 'relation'));
 
-  buildChecks($('#checks-implants'), IMPLANTS, 'implants');
-  buildChecks($('#checks-conditions'), CONDITIONS, 'conditions');
+  buildChecks($('#checks-implants'), IMPLANTS, 'implants', 'implant');
+  buildChecks($('#checks-conditions'), CONDITIONS, 'conditions', 'condition');
 
+  // Suggestions d'allergènes : la valeur proposée est le libellé traduit
   const dlA = $('#dl-allergens');
-  ALLERGENS.forEach((a) => dlA.append(option(a.fr, '')));
+  for (const code of ALLERGENS) {
+    const o = option(t(`allergen.${code}`), '');
+    o.dataset.i18nValue = `allergen.${code}`;
+    dlA.append(o);
+  }
   // Suggestions de médicaments : base SAM (si chargée), sinon petite liste interne
   const dlM = $('#dl-meds');
   Object.keys(MED_BRAND_TO_INN).forEach((k) => dlM.append(option(k.charAt(0).toUpperCase() + k.slice(1), '')));
@@ -94,7 +116,8 @@ function removeButton() {
   b.type = 'button';
   b.className = 'btn btn--icon';
   b.dataset.remove = '';
-  b.setAttribute('aria-label', 'Supprimer');
+  b.dataset.i18nAriaLabel = 'common.remove';
+  b.setAttribute('aria-label', t('common.remove'));
   b.textContent = '✕';
   return b;
 }
@@ -106,11 +129,12 @@ export function addAllergyRow({ substance, reaction }) {
   input.type = 'text';
   input.dataset.k = 'substance';
   input.setAttribute('list', 'dl-allergens');
-  input.placeholder = 'Substance (ex. Pénicilline)';
+  input.dataset.i18nPlaceholder = 'allergies.placeholder';
+  input.placeholder = t('allergies.placeholder');
   input.value = substance || '';
   const sel = document.createElement('select');
   sel.dataset.k = 'reaction';
-  REACTIONS.forEach((r) => sel.append(option(r.en, r.fr)));
+  fillSelect(sel, 'reaction.choose', REACTIONS, 'reaction');
   sel.value = reaction || '';
   row.append(input, sel, removeButton());
   $('#allergy-list').append(row);
@@ -125,12 +149,14 @@ export function addMedRow({ name, dose, inn }) {
   n.dataset.k = 'name';
   n.setAttribute('list', 'dl-meds');
   n.setAttribute('autocomplete', 'off');
-  n.placeholder = 'Médicament (ex. Medrol)';
+  n.dataset.i18nPlaceholder = 'meds.namePlaceholder';
+  n.placeholder = t('meds.namePlaceholder');
   n.value = name || '';
   const d = document.createElement('input');
   d.type = 'text';
   d.dataset.k = 'dose';
-  d.placeholder = 'Dose (ex. 4 mg)';
+  d.dataset.i18nPlaceholder = 'meds.dosePlaceholder';
+  d.placeholder = t('meds.dosePlaceholder');
   d.value = dose || '';
   // Molécule (DCI) trouvée dans la base SAM : c'est elle qui va dans le QR
   const i = document.createElement('input');
@@ -151,7 +177,7 @@ function updateMedSuggestions(query) {
   const dl = $('#dl-meds');
   dl.innerHTML = '';
   for (const p of searchDrugs(query)) {
-    const label = `${p.inn}${p.strength ? ' · ' + p.strength : ''}${p.inactive ? ' (plus commercialisé)' : ''}`;
+    const label = `${p.inn}${p.strength ? ' · ' + p.strength : ''}${p.inactive ? ` (${t('meds.inactive')})` : ''}`;
     dl.append(option(p.name, label));
   }
 }
@@ -175,23 +201,23 @@ export function resolveMedRow(row, { fillDose = false } = {}) {
   if (r) {
     inn.value = r.inn;
     if (fillDose && r.exact && r.strength && !dose.value.trim()) dose.value = r.strength;
-    hint.textContent = `→ Molécule : ${r.inn}${r.exact && r.strength ? ' ' + r.strength : ''}`;
+    hint.textContent = t('meds.molecule', { inn: r.exact && r.strength ? `${r.inn} ${r.strength}` : r.inn });
     hint.classList.add('med-hint--ok');
     return;
   }
   if (isDrugDbLoaded()) inn.value = ''; // pas trouvé dans la base
   const fallback = inn.value || medToEn(name);
   if (fallback !== name.toUpperCase()) {
-    hint.textContent = `→ Molécule : ${fallback}`;
+    hint.textContent = t('meds.molecule', { inn: fallback });
     hint.classList.add('med-hint--ok');
   } else if (isDrugDbLoaded()) {
-    hint.textContent = 'Molécule non trouvée : le nom sera écrit tel quel dans le QR.';
+    hint.textContent = t('meds.notFound');
   } else {
     hint.textContent = '';
   }
 }
 
-/** Après le chargement de la base : met à jour toutes les lignes. */
+/** Après le chargement de la base ou un changement de langue : met à jour toutes les lignes. */
 export function refreshMedRows() {
   $$('#med-list .row').forEach((row) => resolveMedRow(row, { fillDose: false }));
 }

@@ -8,6 +8,8 @@
 
 /* global jsQR */
 
+import { t } from '../i18n/i18n.js';
+
 let detector = null;
 
 async function getDetector() {
@@ -70,7 +72,7 @@ export async function startScanner(onText) {
   const status = document.getElementById('scan-status');
 
   if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
-    throw new Error('La caméra nécessite une page sécurisée (https). Utilisez « Importer depuis une photo ».');
+    throw new Error(t('camera.needsHttpsScan'));
   }
 
   const stream = await navigator.mediaDevices.getUserMedia({
@@ -79,7 +81,7 @@ export async function startScanner(onText) {
   });
   video.srcObject = stream;
   overlay.hidden = false;
-  status.textContent = 'Visez le QR code QREDO…';
+  status.textContent = t('scan.aim');
   await video.play();
 
   let running = true;
@@ -97,7 +99,7 @@ export async function startScanner(onText) {
       const text = await decode(video, video.videoWidth, video.videoHeight);
       if (text && running) {
         if (onText(text)) return stop();
-        status.textContent = 'QR lu, mais ce n’est pas un QR QREDO. Réessayez…';
+        status.textContent = t('scan.notQredo');
       }
     }
     setTimeout(loop, 250);

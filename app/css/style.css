@@ -59,6 +59,7 @@ h2 {
 }
 .topbar__title {
   flex: 1;
+  min-width: 0; /* le titre se replie plutôt que de pousser le menu hors de l'écran */
 }
 .topbar__title h1 {
   font-size: 1.35rem;
@@ -68,6 +69,86 @@ h2 {
   margin: 0;
   font-size: 0.85rem;
   opacity: 0.9;
+}
+
+/* Menu "⋮" (choix de la langue) : grosses cibles pour le doigt */
+.menu {
+  position: relative;
+  flex: none;
+}
+.menu__button {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font: inherit;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+.menu__button:hover,
+.menu__button[aria-expanded='true'] {
+  background: rgba(255, 255, 255, 0.3);
+}
+.menu__button:focus-visible,
+.menu__item:focus-visible {
+  outline: 3px solid #ffd54f;
+  outline-offset: 2px;
+}
+.menu__list {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  gap: 2px;
+  min-width: 220px;
+  padding: 8px;
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.menu__title {
+  margin: 4px 10px 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 1.05rem;
+  text-align: left;
+  cursor: pointer;
+}
+.menu__item:hover {
+  background: var(--bg);
+}
+.menu__item[aria-checked='true'] {
+  background: var(--red-soft);
+  color: var(--red-dark);
+  font-weight: 700;
+}
+.menu__check {
+  width: 1.2em;
+  visibility: hidden;
+  color: var(--red);
+  font-weight: 800;
+}
+.menu__item[aria-checked='true'] .menu__check {
+  visibility: visible;
 }
 
 .privacy {
@@ -563,9 +644,10 @@ select:focus {
   height: 100%;
   object-fit: cover;
 }
+/* Cadre de visée vers le centre de l'écran (au-dessus du panneau du bas) */
 #overlay-medscan {
   justify-content: flex-start;
-  padding-top: calc(18vh + env(safe-area-inset-top));
+  padding-top: calc(28vh + env(safe-area-inset-top));
 }
 .medscan-frame {
   position: relative;
