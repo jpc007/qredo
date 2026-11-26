@@ -1,58 +1,56 @@
 # QREDO – QR Electronic Data Organiser
 
 **Mon dossier médical d'urgence en un QR code.** Idée originale : Dr L. Bodson.
-Preuve de concept (POC) : application web installable (PWA) pour smartphone et PC.
+Preuve de concept (POC, v1.0.6) : application web installable (PWA) pour smartphone et PC.
 
-> 🔒 Les données restent **sur l'appareil** du patient. Aucun serveur, aucun compte, rien n'est envoyé sur Internet.
+> 🔒 Les données restent **sur l'appareil** du patient. Aucun serveur applicatif, aucun compte, aucune donnée
+> patient envoyée sur Internet.
+
+> 📌 **Reprise du projet : lire [SUIVI.md](SUIVI.md)** (état des lieux, ordre du jour, passage sur le serveur
+> définitif). Tâches : [TODO.md](TODO.md).
 
 ---
 
 ## Ce que fait le POC
 
-| Fonction                       | Détail                                                                                    |
-| ------------------------------ | ----------------------------------------------------------------------------------------- |
-| Formulaire en français         | Listes à cocher (allergies, anticoagulants, implants, maladies), médicaments, contacts    |
-| QR code en anglais médical     | Généré en direct, ASCII (sans accents : 1 caractère = 1 octet), noms de molécules (DCI)   |
-| Jauge d'octets                 | Objectif ≤ 900 octets pour une lecture fiable sur écran de veille                         |
-| Fond d'écran de veille         | Image PNG à la taille du téléphone, QR dans la moitié basse, bandeau EMERGENCY            |
-| Transfert PC → téléphone (1)   | Télécharger / partager l'image du fond d'écran                                            |
-| Transfert PC → téléphone (2)   | Scanner le QR affiché sur le PC avec l'appli du téléphone : tous les champs se remplissent |
-| Transfert / sauvegarde (3)     | Fichier `.json` exporté / importé                                                         |
-| Carte portefeuille             | Impression au format carte bancaire (85,6 × 54 mm)                                         |
-| Installation + hors ligne      | Icône sur l'écran d'accueil, fonctionne en mode avion                                     |
+| Fonction | Détail |
+| --- | --- |
+| Dossier complet | Identité, allergies, implants, maladies, handicap, opérations, hospitalisation, médicaments, vaccins, volontés, mesures, contacts, personne de confiance, médecins, assurances |
+| QR code en anglais médical | ASCII (1 caractère = 1 octet), molécules (DCI), objectif ≤ 900 octets, date `UPDATED` en UTC |
+| 7 langues d'interface | FR, EN, DE, NL, IT, PT, ES (menu ⋮) ; le QR reste en anglais |
+| Médicaments | Base officielle belge SAM (AFMPS), scan de la boîte (DataMatrix / CNK, puis OCR) sur mobile, avis d'interactions |
+| Fond d'écran de veille | Image à la taille du téléphone, QR centré, aide Android / iPhone |
+| Transfert / sauvegarde | Image, scan du QR (import), fichier `.json` ; carte portefeuille imprimable |
+| Installation + hors ligne | Icône sur l'écran d'accueil, mode avion, mises à jour automatiques |
 
 ## Structure du projet
 
 ```
 QREDO/
-├── app/                        ← L'APPLICATION (dossier à publier tel quel)
+├── app/                        ← L'APPLICATION (dossier publié tel quel)
 │   ├── index.html              Page unique : formulaire + panneau QR
-│   ├── manifest.webmanifest    Nom, icônes, couleurs de l'appli installée
-│   ├── sw.js                   Service worker : fonctionnement hors ligne
-│   ├── css/
-│   │   └── style.css           Apparence (téléphone d'abord, PC ≥ 960 px, impression)
+│   ├── manifest.webmanifest    Appli installée (nom, icônes)
+│   ├── sw.js                   Service worker (hors ligne) – liste APP_FILES
+│   ├── css/style.css           Apparence (téléphone, PC, impression)
 │   ├── js/
-│   │   ├── app.js              Point d'entrée : relie tous les modules
-│   │   ├── core/               Logique pure (sans interface)
-│   │   │   ├── qr-text.js      Dossier ⇄ texte du QR (construction + relecture)
-│   │   │   ├── qr-render.js    Génération et dessin du QR code
-│   │   │   └── storage.js      Sauvegarde locale, fichier .json
-│   │   ├── data/               Données de référence
-│   │   │   ├── picklists.js    Listes français → anglais médical, noms commerciaux → DCI
-│   │   │   └── sample-dossier.js  Dossier fictif de démonstration
-│   │   └── ui/                 Interface
-│   │       ├── form.js         Formulaire : construction, remplissage, lecture
-│   │       ├── wallpaper.js    Fond d'écran de veille
-│   │       ├── scanner.js      Lecture de QR (caméra ou photo)
-│   │       └── print-card.js   Carte portefeuille
-│   ├── lib/                    Bibliothèques externes (ne pas modifier)
-│   │   ├── qrcode-generator.js Génération QR – Kazuhiko Arase, licence MIT
-│   │   └── jsqr.js             Lecture QR de secours – licence Apache 2.0
-│   └── icons/                  Icônes de l'application (PNG)
-├── tools/                      Scripts PowerShell pour le développement
-│   ├── generate-icons.ps1      Redessine les icônes
-│   └── phone-dev.ps1           Affiche l'appli sur un téléphone Android branché (adb)
-├── .github/workflows/pages.yml Publication automatique sur GitHub Pages
+│   │   ├── app.js              Point d'entrée
+│   │   ├── core/               Logique : qr-text (dossier ⇄ QR), qr-render, storage, clock (heure UTC),
+│   │   │                       drug-db (base SAM), barcode, ocr, interactions, device
+│   │   ├── data/               picklists (codes), interactions (table de base), sample-dossier (5 patients fictifs)
+│   │   ├── i18n/               Traductions intégrées (fr, en, de, nl, it, pt, es) + moteur i18n
+│   │   └── ui/                 form, wallpaper, scanner, med-camera, interactions-panel, lang-menu, print-card
+│   ├── lib/                    Bibliothèques embarquées (qrcode-generator, jsQR, zxing-wasm, tesseract)
+│   ├── data/                   Base médicaments générée (non versionnée)
+│   └── icons/                  Icônes
+├── documentation/              Mode d'emploi + guide iPhone (Word, PDF) et captures
+├── docs/                       Notes internes (démonstration)
+├── tools/
+│   ├── sam/build-drug-db.py    Base médicaments depuis l'export public SAM (AFMPS / eHealth)
+│   ├── manual/                 Génération des documents (captures, Word, PDF)
+│   ├── generate-icons.ps1      Icônes
+│   └── phone-dev.ps1           Appli sur un téléphone Android branché (adb)
+├── .github/workflows/pages.yml Publication + base SAM (chaque envoi + chaque lundi)
+├── SUIVI.md / TODO.md          Suivi et tâches
 └── .vscode/                    Réglages VS Code (Live Server, Prettier)
 ```
 
@@ -80,6 +78,20 @@ GitHub Pages à chaque `git push` sur `main` (voir `.github/workflows/pages.yml`
 seul le dossier `app/` est mis en ligne.
 
 Sur le Samsung : ouvrir l'adresse dans **Chrome** → menu ⋮ → **Installer l'application**.
+
+## Régénérer le mode d'emploi
+
+Après une modification de l'application (nécessite Chrome et Microsoft Word) :
+
+```powershell
+cd tools\manual
+npm install                      # une seule fois
+node capture-screenshots.mjs     # captures d'écran (+ --iphone pour le guide iPhone)
+node build-manual.mjs            # documentation\QREDO-Mode-emploi.docx
+powershell -ExecutionPolicy Bypass -File export-pdf.ps1   # sommaire + PDF
+```
+
+Penser à mettre à jour `VERSION` dans `build-manual.mjs`.
 
 ## Contraintes du QR code (à retenir)
 

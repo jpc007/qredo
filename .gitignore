@@ -10,9 +10,8 @@ qredo-*.png
 app/data/medicaments-be.json
 app/data/medicaments-be-codes.json
 
-# Documents internes : restent sur ce PC, jamais publiés
+# Document de tiers (cahier des charges du Dr Bodson) : reste sur ce PC
 MinimumlRequierement/
-docs/
 
 # Système / éditeur
 .DS_Store

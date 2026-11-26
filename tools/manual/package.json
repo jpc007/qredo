@@ -1,0 +1,13 @@
+{
+  "name": "qredo-manual",
+  "private": true,
+  "description": "Génération du mode d'emploi QREDO (captures d'écran + Word)",
+  "type": "module",
+  "scripts": {
+    "screenshots": "node capture-screenshots.mjs",
+    "docx": "node build-manual.mjs"
+  },
+  "dependencies": {
+    "docx": "^9.0.0"
+  }
+}
