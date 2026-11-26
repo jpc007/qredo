@@ -192,6 +192,15 @@
         </section>
 
         <section class="card">
+          <h2>🤝 Offrir QREDO à un proche</h2>
+          <p class="hint">C'est gratuit : faites scanner ce QR code pour installer l'application.</p>
+          <div class="btn-col">
+            <button id="btn-invite" class="btn" type="button">📲 Afficher le QR de l'application</button>
+            <button id="btn-invite-share" class="btn" type="button" hidden>📤 Partager le lien (WhatsApp, SMS…)</button>
+          </div>
+        </section>
+
+        <section class="card">
           <h2>🔄 Transférer / sauvegarder</h2>
           <div class="btn-col">
             <button id="btn-scan" class="btn" type="button">📷 Importer en scannant un QR QREDO</button>
@@ -226,6 +235,17 @@
     <div id="overlay-qr" class="overlay overlay--white" hidden>
       <p class="overlay__banner">EMERGENCY MEDICAL ID · URGENCE MÉDICALE</p>
       <canvas id="qr-canvas-big"></canvas>
+      <p class="overlay__hint">Touchez l'écran pour fermer</p>
+    </div>
+
+    <!-- ================= QR D'INVITATION (installer l'appli) ================= -->
+    <div id="overlay-invite" class="overlay overlay--white" hidden>
+      <p class="overlay__banner overlay__banner--blue">QREDO · gratuit · free</p>
+      <canvas id="qr-canvas-invite"></canvas>
+      <p class="overlay__hint">
+        Scannez avec l'appareil photo pour installer QREDO<br />
+        <strong id="invite-url"></strong>
+      </p>
       <p class="overlay__hint">Touchez l'écran pour fermer</p>
     </div>
 

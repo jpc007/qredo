@@ -23,7 +23,7 @@ import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js'
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 
-export const APP_VERSION = '0.1.0';
+export const APP_VERSION = '0.2.0';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -187,6 +187,35 @@ $('overlay-qr').addEventListener('click', () => {
   wakeLock?.release?.();
   wakeLock = null;
 });
+
+// ---------------------------------------------------------------------
+// Offrir QREDO à un proche : QR code de l'adresse de l'application
+// ---------------------------------------------------------------------
+// Adresse calculée (sans "?exemple") : reste juste si le site déménage.
+const APP_URL = new URL('./', location.href).href;
+
+$('btn-invite').addEventListener('click', () => {
+  $('overlay-invite').hidden = false;
+  $('invite-url').textContent = APP_URL;
+  const size = Math.floor(Math.min(window.innerWidth * 0.8, window.innerHeight * 0.6));
+  renderQrToCanvas($('qr-canvas-invite'), makeQr(APP_URL), size);
+});
+$('overlay-invite').addEventListener('click', () => ($('overlay-invite').hidden = true));
+
+if (navigator.share) {
+  $('btn-invite-share').hidden = false;
+  $('btn-invite-share').addEventListener('click', async () => {
+    try {
+      await navigator.share({
+        title: 'QREDO',
+        text: 'Mon QR code médical d’urgence, gratuit. Installe-le aussi :',
+        url: APP_URL,
+      });
+    } catch (e) {
+      if (e.name !== 'AbortError') toast(e.message);
+    }
+  });
+}
 
 // ---------------------------------------------------------------------
 // Import depuis un QR QREDO (caméra ou photo)

@@ -493,6 +493,13 @@ select:focus {
   font-weight: 800;
   text-align: center;
 }
+.overlay__banner--blue {
+  background: #1565c0;
+}
+#invite-url {
+  color: var(--ink);
+  word-break: break-all;
+}
 .overlay__hint {
   margin: 0;
   color: #888;
