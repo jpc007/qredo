@@ -8,7 +8,7 @@
 // Ajouter ici tout nouveau fichier de l'application (APP_FILES).
 // =====================================================================
 
-const CACHE_VERSION = 'qredo-v1.0.1';
+const CACHE_VERSION = 'qredo-v1.0.2';
 
 const APP_FILES = [
   './',
@@ -33,6 +33,9 @@ const APP_FILES = [
   './js/ui/scanner.js',
   './js/ui/print-card.js',
   './js/ui/lang-menu.js',
+  './js/ui/interactions-panel.js',
+  './js/core/interactions.js',
+  './js/data/interactions.js',
   './js/i18n/i18n.js',
   './js/i18n/fr.js',
   './js/i18n/en.js',

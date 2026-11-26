@@ -275,4 +275,22 @@ export default {
   // Carte portefeuille
   'print.subtitle': 'Medische nood',
   'print.help': '✂️ Knip de kaart uit langs de stippellijn (formaat bankkaart 85,6 × 54 mm).',
+
+  // Interactions médicamenteuses
+  'interaction.title': '⚠️ Mogelijke wisselwerking tussen uw geneesmiddelen',
+  'interaction.advice': 'Let op: vraag raad aan uw arts of apotheker. Stop of wijzig nooit zelf een behandeling.',
+  'interaction.level.contraindicated': 'Gecontra-indiceerde combinatie',
+  'interaction.level.avoid': 'Afgeraden combinatie',
+  'interaction.level.caution': 'Voorzichtigheid',
+  'interaction.risk.bleeding': 'verhoogd risico op bloedingen',
+  'interaction.risk.serotonin': 'risico op serotoninesyndroom (onrust, koorts, beven)',
+  'interaction.risk.respiratory': 'risico op sterke slaperigheid en ademhalingsproblemen',
+  'interaction.risk.kidney': 'risico voor de nieren (en het kaliumgehalte)',
+  'interaction.risk.hyperkalemia': 'risico op te veel kalium in het bloed',
+  'interaction.risk.toxicity': 'risico op overdosering van een van beide geneesmiddelen',
+  'interaction.risk.hypotension': 'risico op een ernstige bloeddrukdaling',
+  'interaction.risk.heart': 'risico op een sterk vertraagde hartslag',
+  'interaction.risk.reducedEffect': 'risico dat een van de geneesmiddelen minder goed werkt',
+  'interaction.risk.duplicate': 'zelfde werkzame stof of groep dubbel: risico op overdosering',
+  'interaction.disclaimer': 'Basiscontrole, niet volledig, uitgevoerd op uw telefoon. Ze vervangt niet het advies van een arts of apotheker.',
 };

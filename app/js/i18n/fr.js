@@ -277,4 +277,22 @@ export default {
   // Carte portefeuille
   'print.subtitle': 'Urgence médicale',
   'print.help': '✂️ Découpez la carte en suivant le pointillé (format carte bancaire 85,6 × 54 mm).',
+
+  // Interactions médicamenteuses
+  'interaction.title': '⚠️ Interaction possible entre vos médicaments',
+  'interaction.advice': 'Faites attention : demandez conseil à votre médecin ou à votre pharmacien. N’arrêtez et ne modifiez jamais un traitement de vous-même.',
+  'interaction.level.contraindicated': 'Association contre-indiquée',
+  'interaction.level.avoid': 'Association déconseillée',
+  'interaction.level.caution': 'Prudence',
+  'interaction.risk.bleeding': 'risque accru de saignement',
+  'interaction.risk.serotonin': 'risque de syndrome sérotoninergique (agitation, fièvre, tremblements)',
+  'interaction.risk.respiratory': 'risque de somnolence importante et de difficultés à respirer',
+  'interaction.risk.kidney': 'risque pour les reins (et pour le potassium)',
+  'interaction.risk.hyperkalemia': 'risque d’excès de potassium dans le sang',
+  'interaction.risk.toxicity': 'risque de surdosage de l’un des deux médicaments',
+  'interaction.risk.hypotension': 'risque de chute grave de la tension',
+  'interaction.risk.heart': 'risque de ralentissement important du cœur',
+  'interaction.risk.reducedEffect': 'risque que l’un des médicaments soit moins efficace',
+  'interaction.risk.duplicate': 'même molécule ou même famille en double : risque de surdosage',
+  'interaction.disclaimer': 'Vérification de base, non exhaustive, faite dans votre téléphone. Elle ne remplace pas l’avis d’un médecin ou d’un pharmacien.',
 };

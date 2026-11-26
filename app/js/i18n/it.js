@@ -273,4 +273,22 @@ export default {
   // Carte portefeuille
   'print.subtitle': 'Emergenza medica',
   'print.help': '✂️ Ritaglia la tessera lungo la linea tratteggiata (formato carta di credito 85,6 × 54 mm).',
+
+  // Interactions médicamenteuses
+  'interaction.title': '⚠️ Possibile interazione tra i suoi farmaci',
+  'interaction.advice': 'Faccia attenzione: chieda consiglio al suo medico o al farmacista. Non interrompa né modifichi mai una terapia di sua iniziativa.',
+  'interaction.level.contraindicated': 'Associazione controindicata',
+  'interaction.level.avoid': 'Associazione sconsigliata',
+  'interaction.level.caution': 'Cautela',
+  'interaction.risk.bleeding': 'aumentato rischio di sanguinamento',
+  'interaction.risk.serotonin': 'rischio di sindrome serotoninergica (agitazione, febbre, tremori)',
+  'interaction.risk.respiratory': 'rischio di forte sonnolenza e difficoltà respiratorie',
+  'interaction.risk.kidney': 'rischio per i reni (e per il potassio)',
+  'interaction.risk.hyperkalemia': 'rischio di eccesso di potassio nel sangue',
+  'interaction.risk.toxicity': 'rischio di sovradosaggio di uno dei due farmaci',
+  'interaction.risk.hypotension': 'rischio di grave calo della pressione',
+  'interaction.risk.heart': 'rischio di forte rallentamento del cuore',
+  'interaction.risk.reducedEffect': 'rischio che uno dei farmaci sia meno efficace',
+  'interaction.risk.duplicate': 'stessa molecola o stessa famiglia in doppio: rischio di sovradosaggio',
+  'interaction.disclaimer': 'Controllo di base, non esaustivo, eseguito sul suo telefono. Non sostituisce il parere di un medico o di un farmacista.',
 };

@@ -273,4 +273,22 @@ export default {
   // Carte portefeuille
   'print.subtitle': 'Medical emergency',
   'print.help': '✂️ Cut out the card along the dotted line (bank card size 85.6 × 54 mm).',
+
+  // Interactions médicamenteuses
+  'interaction.title': '⚠️ Possible interaction between your medicines',
+  'interaction.advice': 'Please be careful: ask your doctor or pharmacist for advice. Never stop or change a treatment on your own.',
+  'interaction.level.contraindicated': 'Contraindicated combination',
+  'interaction.level.avoid': 'Combination not recommended',
+  'interaction.level.caution': 'Caution',
+  'interaction.risk.bleeding': 'increased risk of bleeding',
+  'interaction.risk.serotonin': 'risk of serotonin syndrome (agitation, fever, tremor)',
+  'interaction.risk.respiratory': 'risk of severe drowsiness and breathing difficulties',
+  'interaction.risk.kidney': 'risk to the kidneys (and potassium levels)',
+  'interaction.risk.hyperkalemia': 'risk of too much potassium in the blood',
+  'interaction.risk.toxicity': 'risk of overdose of one of the two medicines',
+  'interaction.risk.hypotension': 'risk of a severe drop in blood pressure',
+  'interaction.risk.heart': 'risk of a very slow heartbeat',
+  'interaction.risk.reducedEffect': 'risk that one of the medicines works less well',
+  'interaction.risk.duplicate': 'same molecule or same family twice: risk of overdose',
+  'interaction.disclaimer': 'Basic check, not exhaustive, done on your phone. It does not replace the advice of a doctor or pharmacist.',
 };

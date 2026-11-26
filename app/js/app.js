@@ -25,9 +25,10 @@ import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js'
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 import { setupLanguageMenu } from './ui/lang-menu.js';
+import { renderInteractions } from './ui/interactions-panel.js';
 import { applyTranslations, getLocale, onLanguageChange, t } from './i18n/i18n.js';
 
-export const APP_VERSION = '1.0.1';
+export const APP_VERSION = '1.0.2';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -97,6 +98,8 @@ function refresh() {
     $('st-version').textContent = '–';
     $('st-modules').textContent = '–';
   }
+  // Avis au patient : interactions possibles entre ses médicaments
+  renderInteractions($('med-interactions'), state.meds);
   updateWallpaperPreview();
 }
 

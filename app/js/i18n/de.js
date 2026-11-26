@@ -276,4 +276,22 @@ export default {
   // Carte portefeuille
   'print.subtitle': 'Medizinischer Notfall',
   'print.help': '✂️ Schneiden Sie die Karte entlang der gestrichelten Linie aus (Bankkartenformat 85,6 × 54 mm).',
+
+  // Interactions médicamenteuses
+  'interaction.title': '⚠️ Mögliche Wechselwirkung zwischen Ihren Medikamenten',
+  'interaction.advice': 'Bitte seien Sie vorsichtig: Fragen Sie Ihren Arzt oder Apotheker um Rat. Setzen Sie eine Behandlung nie eigenmächtig ab und ändern Sie sie nicht selbst.',
+  'interaction.level.contraindicated': 'Kontraindizierte Kombination',
+  'interaction.level.avoid': 'Nicht empfohlene Kombination',
+  'interaction.level.caution': 'Vorsicht',
+  'interaction.risk.bleeding': 'erhöhtes Blutungsrisiko',
+  'interaction.risk.serotonin': 'Risiko eines Serotonin-Syndroms (Unruhe, Fieber, Zittern)',
+  'interaction.risk.respiratory': 'Risiko starker Schläfrigkeit und Atembeschwerden',
+  'interaction.risk.kidney': 'Risiko für die Nieren (und den Kaliumspiegel)',
+  'interaction.risk.hyperkalemia': 'Risiko eines zu hohen Kaliumspiegels im Blut',
+  'interaction.risk.toxicity': 'Risiko einer Überdosierung eines der beiden Medikamente',
+  'interaction.risk.hypotension': 'Risiko eines starken Blutdruckabfalls',
+  'interaction.risk.heart': 'Risiko einer starken Verlangsamung des Herzschlags',
+  'interaction.risk.reducedEffect': 'Risiko, dass eines der Medikamente schwächer wirkt',
+  'interaction.risk.duplicate': 'gleicher Wirkstoff oder gleiche Gruppe doppelt: Risiko einer Überdosierung',
+  'interaction.disclaimer': 'Grundlegende, nicht vollständige Prüfung auf Ihrem Telefon. Sie ersetzt nicht den Rat eines Arztes oder Apothekers.',
 };

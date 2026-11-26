@@ -118,8 +118,9 @@ export function findDrugByCodes({ gtins = [], cnks = [] } = {}) {
 /**
  * Molécule correspondant à un nom saisi :
  *  1) nom exact d'un produit ("Medrol 4 mg")
- *  2) nom de marque seul ("Medrol") si tous les produits de cette marque
- *     ont la même molécule
+ *  2) nom de marque seul ("Nurofen") : la molécule commune à tous les
+ *     produits de cette marque, sel exclu (IBUPROFEN, IBUPROFEN SODIUM,
+ *     IBUPROFEN LYSINE -> IBUPROFEN)
  * Renvoie { inn, strength, exact } ou null.
  */
 export function resolveDrug(name) {
@@ -129,9 +130,24 @@ export function resolveDrug(name) {
   const exact = db.byName.get(k);
   if (exact) return { inn: exact.inn, strength: exact.strength, exact: true };
   if (!k.includes(' ')) {
-    const group = db.products.filter((p) => p.first === k);
-    const inns = new Set(group.map((p) => p.inn));
-    if (group.length && inns.size === 1) return { inn: group[0].inn, strength: '', exact: false };
+    let group = db.products.filter((p) => p.first === k);
+    if (group.some((p) => !p.inactive)) group = group.filter((p) => !p.inactive); // produits commercialisés
+    const inn = commonMolecule(group.map((p) => p.inn));
+    if (inn) return { inn, strength: '', exact: false };
   }
   return null;
+}
+
+/** Début commun (mot par mot) de toutes les molécules, ex. "IBUPROFEN". */
+function commonMolecule(inns) {
+  if (!inns.length) return '';
+  const lists = inns.map((s) => s.split(' '));
+  const common = [];
+  for (let i = 0; i < lists[0].length; i++) {
+    const w = lists[0][i];
+    if (w === '/' || !lists.every((l) => l[i] === w)) break;
+    common.push(w);
+  }
+  const inn = common.join(' ');
+  return inn.length >= 4 ? inn : '';
 }

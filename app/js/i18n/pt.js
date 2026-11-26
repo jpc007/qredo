@@ -275,4 +275,22 @@ export default {
   // Carte portefeuille
   'print.subtitle': 'Emergência médica',
   'print.help': '✂️ Recorte o cartão pela linha tracejada (tamanho de cartão bancário 85,6 × 54 mm).',
+
+  // Interactions médicamenteuses
+  'interaction.title': '⚠️ Possível interação entre os seus medicamentos',
+  'interaction.advice': 'Tenha cuidado: peça conselho ao seu médico ou farmacêutico. Nunca interrompa nem altere um tratamento por iniciativa própria.',
+  'interaction.level.contraindicated': 'Associação contraindicada',
+  'interaction.level.avoid': 'Associação desaconselhada',
+  'interaction.level.caution': 'Precaução',
+  'interaction.risk.bleeding': 'risco aumentado de hemorragia',
+  'interaction.risk.serotonin': 'risco de síndrome serotoninérgica (agitação, febre, tremores)',
+  'interaction.risk.respiratory': 'risco de sonolência intensa e dificuldades respiratórias',
+  'interaction.risk.kidney': 'risco para os rins (e para o potássio)',
+  'interaction.risk.hyperkalemia': 'risco de excesso de potássio no sangue',
+  'interaction.risk.toxicity': 'risco de sobredosagem de um dos dois medicamentos',
+  'interaction.risk.hypotension': 'risco de queda grave da tensão arterial',
+  'interaction.risk.heart': 'risco de abrandamento importante do coração',
+  'interaction.risk.reducedEffect': 'risco de um dos medicamentos ser menos eficaz',
+  'interaction.risk.duplicate': 'mesma substância ou mesma família em duplicado: risco de sobredosagem',
+  'interaction.disclaimer': 'Verificação básica, não exaustiva, feita no seu telemóvel. Não substitui o conselho de um médico ou farmacêutico.',
 };

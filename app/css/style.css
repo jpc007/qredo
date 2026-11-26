@@ -636,6 +636,42 @@ select:focus {
   position: relative;
 }
 
+/* ------------- Avis : interactions possibles entre médicaments ------------- */
+.interactions {
+  border: 2px solid var(--warn);
+  background: #fff8e1;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: grid;
+  gap: 8px;
+}
+.interactions__title {
+  margin: 0;
+  font-weight: 800;
+  color: #8a4b00;
+}
+.interactions__list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+.interactions__item--contraindicated strong {
+  color: var(--red);
+}
+.interactions__item--avoid strong {
+  color: #b25e00;
+}
+.interactions__advice {
+  margin: 0;
+  font-weight: 600;
+}
+.interactions__disclaimer {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
 /* ------------------- Scanner de boîte de médicament ------------------- */
 #medscan-video {
   position: absolute;
