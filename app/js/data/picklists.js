@@ -45,21 +45,6 @@ export const ALLERGENS = [
   { en: 'BEE/WASP VENOM', fr: 'Piqûre d’abeille / guêpe' },
 ];
 
-// Anticoagulants et antiagrégants : vital pour les urgences (saignement)
-export const ANTICOAGULANTS = [
-  { en: 'ACENOCOUMAROL', fr: 'Sintrom (acénocoumarol)' },
-  { en: 'PHENPROCOUMON', fr: 'Marcoumar (phenprocoumone)' },
-  { en: 'WARFARIN', fr: 'Marevan / Coumadine (warfarine)' },
-  { en: 'APIXABAN', fr: 'Eliquis (apixaban)' },
-  { en: 'RIVAROXABAN', fr: 'Xarelto (rivaroxaban)' },
-  { en: 'DABIGATRAN', fr: 'Pradaxa (dabigatran)' },
-  { en: 'EDOXABAN', fr: 'Lixiana (edoxaban)' },
-  { en: 'LMWH', fr: 'Héparine injectable (Clexane, Fraxiparine)' },
-  { en: 'CLOPIDOGREL', fr: 'Plavix (clopidogrel) – antiagrégant' },
-  { en: 'TICAGRELOR', fr: 'Brilique (ticagrélor) – antiagrégant' },
-  { en: 'ASPIRIN', fr: 'Aspirine / Asaflow – antiagrégant' },
-];
-
 // Implants et appareillages
 export const IMPLANTS = [
   { en: 'PACEMAKER', fr: 'Stimulateur cardiaque (pacemaker)' },

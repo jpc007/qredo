@@ -2,14 +2,13 @@
 // QREDO - Formulaire : construction, remplissage, lecture
 // ---------------------------------------------------------------------
 // Champs simples  : attribut data-field="nomDuChamp"
-// Cases à cocher  : data-group="anticoagulants" + value="CODE"
+// Cases à cocher  : data-group="implants|conditions" + value="CODE"
 // Lignes ajoutées : allergies et médicaments (data-k="...")
 // Contacts        : data-contact="0|1" + data-k="name|relation|phone"
 // =====================================================================
 
 import {
   ALLERGENS,
-  ANTICOAGULANTS,
   BLOOD_GROUPS,
   CONDITIONS,
   IMPLANTS,
@@ -56,7 +55,6 @@ export function setupForm(form, onChange) {
 
   $$('.sel-relation').forEach((sel) => RELATIONS.forEach((r) => sel.append(option(r.en, r.fr))));
 
-  buildChecks($('#checks-anticoagulants'), ANTICOAGULANTS, 'anticoagulants');
   buildChecks($('#checks-implants'), IMPLANTS, 'implants');
   buildChecks($('#checks-conditions'), CONDITIONS, 'conditions');
 
@@ -158,7 +156,7 @@ export function readForm(form) {
   for (const el of $$('[data-field]', form)) {
     d[el.dataset.field] = el.type === 'checkbox' ? el.checked : el.value.trim();
   }
-  for (const group of ['anticoagulants', 'implants', 'conditions']) {
+  for (const group of ['implants', 'conditions']) {
     d[group] = $$(`[data-group="${group}"]:checked`, form).map((el) => el.value);
   }
   const rowData = (row) => Object.fromEntries($$('[data-k]', row).map((el) => [el.dataset.k, el.value.trim()]));

@@ -11,7 +11,6 @@
 
 import {
   ALLERGENS,
-  ANTICOAGULANTS,
   CONDITIONS,
   IMPLANTS,
   MED_BRAND_TO_INN,
@@ -36,7 +35,6 @@ export function emptyDossier() {
     languages: '',
     noKnownAllergy: false,
     allergies: [], // [{ substance, reaction }]
-    anticoagulants: [], // codes "en"
     implants: [],
     implantsOther: '',
     conditions: [],
@@ -166,7 +164,7 @@ const isCode = (list, en) => list.some((x) => x.en === en);
 // ---------------------------------------------------------------------
 /**
  * Construit le texte du QR vital, dans l'ordre d'importance pour les
- * secours : identité, allergies, anticoagulants, implants, directives,
+ * secours : identité, allergies, implants, directives,
  * maladies, médicaments, groupe sanguin, contacts...
  * @param {object} d dossier
  * @param {boolean} ascii false = garder les accents (pour comparaison)
@@ -194,9 +192,6 @@ export function buildQrText(d, ascii = true) {
     .map((a) => allergenToEn(a.substance, ascii) + (a.reaction ? ` (${a.reaction})` : ''));
   if (allergies.length) add('ALLERGY', allergies.join('; '));
   else if (d.noKnownAllergy) add('ALLERGY', 'NONE KNOWN');
-
-  // Anticoagulants
-  add('ANTICOAGULANT', (d.anticoagulants || []).join('; '));
 
   // Implants
   const implants = [...(d.implants || []), ...splitOther(d.implantsOther).map(up)];
@@ -309,10 +304,8 @@ export function parseQrText(text) {
         }
         break;
       case 'ANTICOAGULANT':
-        for (const it of items(v)) {
-          if (isCode(ANTICOAGULANTS, it)) d.anticoagulants.push(it);
-          else d.meds.push({ name: it, dose: '' });
-        }
+        // Ancien format (rubrique supprimée) : repris dans les médicaments
+        for (const it of items(v)) d.meds.push({ name: it, dose: '' });
         break;
       case 'IMPLANT': {
         const other = [];

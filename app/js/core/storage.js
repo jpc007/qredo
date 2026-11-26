@@ -6,7 +6,7 @@
 // ou de sauvegarder son dossier.
 // =====================================================================
 
-import { emptyDossier } from './qr-text.js';
+import { emptyDossier, medToEn } from './qr-text.js';
 
 const STORAGE_KEY = 'qredo.dossier.v1';
 const FILE_FORMAT = 'QREDO-DOSSIER';
@@ -16,9 +16,18 @@ export function normalizeDossier(d) {
   const base = emptyDossier();
   const out = { ...base, ...(d || {}) };
   out.contacts = [0, 1].map((i) => ({ ...base.contacts[i], ...((d && d.contacts && d.contacts[i]) || {}) }));
-  for (const k of ['allergies', 'anticoagulants', 'implants', 'conditions', 'meds']) {
+  for (const k of ['allergies', 'implants', 'conditions', 'meds']) {
     if (!Array.isArray(out[k])) out[k] = [];
   }
+  // Ancienne rubrique "Anticoagulants" (supprimée) : transférée dans les
+  // médicaments, sans doublon, pour ne perdre aucune information
+  if (Array.isArray(d?.anticoagulants) && d.anticoagulants.length) {
+    const known = out.meds.map((m) => medToEn(m.name));
+    for (const code of d.anticoagulants) {
+      if (!known.includes(code)) out.meds.push({ name: code, dose: '' });
+    }
+  }
+  delete out.anticoagulants;
   // Ancienne valeur "ANAPHYLAXIS" (retirée de la liste) -> "SEVERE"
   out.allergies = out.allergies.map((a) => (a.reaction === 'ANAPHYLAXIS' ? { ...a, reaction: 'SEVERE' } : a));
   return out;
