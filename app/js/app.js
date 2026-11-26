@@ -23,7 +23,7 @@ import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js'
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 
-export const APP_VERSION = '0.3.0';
+export const APP_VERSION = '0.4.0';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -325,11 +325,42 @@ $('btn-install').addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => toast('QREDO est installé sur votre écran d’accueil 🎉'));
 
+let swRegistration = null;
 if ('serviceWorker' in navigator && window.isSecureContext) {
-  navigator.serviceWorker.register('sw.js').catch(() => {
-    /* le mode hors ligne n'est pas disponible, l'appli fonctionne quand même */
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker
+    .register('sw.js')
+    .then((reg) => {
+      swRegistration = reg;
+      reg.update(); // vérifie à chaque ouverture s'il existe une nouvelle version
+    })
+    .catch(() => {
+      /* le mode hors ligne n'est pas disponible, l'appli fonctionne quand même */
+    });
+  // Nouvelle version installée -> on recharge une fois pour l'afficher
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloading) return;
+    reloading = true;
+    location.reload();
   });
 }
+
+// Bouton "Mettre à jour" (pied de page)
+$('btn-update').addEventListener('click', async () => {
+  toast('Recherche de mise à jour…');
+  try {
+    await swRegistration?.update();
+  } catch {
+    /* hors ligne : on recharge quand même */
+  }
+  location.reload();
+});
+
+// Quand l'appli revient au premier plan (téléphone), on vérifie aussi
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') swRegistration?.update().catch(() => {});
+});
 
 // ---------------------------------------------------------------------
 // Démarrage

@@ -8,7 +8,7 @@
 // Ajouter ici tout nouveau fichier de l'application (APP_FILES).
 // =====================================================================
 
-const CACHE_VERSION = 'qredo-v0.3.0';
+const CACHE_VERSION = 'qredo-v0.4.0';
 
 const APP_FILES = [
   './',
@@ -51,7 +51,9 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
   event.respondWith(
-    fetch(req)
+    // cache: 'no-cache' = toujours demander au serveur si le fichier a changé
+    // (sinon le navigateur peut resservir une ancienne version ~10 min)
+    fetch(req, { cache: 'no-cache' })
       .then((res) => {
         if (res.ok) {
           const copy = res.clone();

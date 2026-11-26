@@ -308,6 +308,13 @@ select:focus {
   text-align: center;
   color: var(--muted);
 }
+.btn--small {
+  min-height: 36px;
+  padding: 6px 14px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  text-align: center;
+}
 .btn--block {
   width: 100%;
 }
