@@ -39,6 +39,7 @@ jobs:
           if python3 tools/sam/build-drug-db.py --out app/data/medicaments-be.json; then
             echo "Base médicaments : construite depuis SAM"
           elif curl -fsSL "https://jpc007.github.io/qredo/data/medicaments-be.json" -o app/data/medicaments-be.json; then
+            curl -fsSL "https://jpc007.github.io/qredo/data/medicaments-be-codes.json" -o app/data/medicaments-be-codes.json || true
             echo "::warning::SAM indisponible : base médicaments précédente conservée"
           else
             echo "::warning::Base médicaments indisponible : l'appli fonctionnera en saisie libre"

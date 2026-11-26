@@ -18,13 +18,14 @@ import {
   today,
 } from './core/storage.js';
 import { SAMPLES } from './data/sample-dossier.js';
-import { fillForm, readForm, refreshMedRows, setupForm } from './ui/form.js';
+import { addMedRow, fillForm, readForm, refreshMedRows, setupForm } from './ui/form.js';
+import { setupMedCamera } from './ui/med-camera.js';
 import { drugDbMeta, loadDrugDb } from './core/drug-db.js';
 import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js';
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 
-export const APP_VERSION = '0.9.0';
+export const APP_VERSION = '1.0.0';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -372,6 +373,20 @@ if (!state.updated) state.updated = today();
 fillForm(form, state);
 refresh();
 window.addEventListener('resize', debounce(refresh, 200));
+
+// Ajout d'un médicament en scannant sa boîte (téléphone / tablette uniquement)
+setupMedCamera({
+  toast,
+  onDrug: (p) => {
+    // On réutilise une ligne vide s'il y en a une, sinon on en ajoute une
+    const empty = [...document.querySelectorAll('#med-list .row')].find(
+      (r) => !r.querySelector('[data-k="name"]').value.trim(),
+    );
+    empty?.remove();
+    addMedRow({ name: p.name, dose: p.strength, inn: p.inn }).scrollIntoView({ block: 'center' });
+    onFormChange();
+  },
+});
 
 // Base des médicaments belges (SAM) : chargée en arrière-plan
 function showDrugDbInfo() {

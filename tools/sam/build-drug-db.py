@@ -129,6 +129,7 @@ def parse_amp(zip_path):
     amp_name = next(n for n in z.namelist() if n.startswith("AMP-"))
     sam_id = None
     products = {}
+    gtins, cnks = {}, {}  # code -> clé du produit
     stats = {"total": 0, "kept": 0}
 
     for event, el in ET.iterparse(z.open(amp_name), events=("start", "end")):
@@ -164,11 +165,28 @@ def parse_amp(zip_path):
                 if prev is None or (prev[3] == 1 and active == 0):
                     s = " / ".join(strengths) if any(strengths) else ""
                     products[k] = [name, " / ".join(inns), s, active]
+                # Codes imprimés sur les boîtes (tous les conditionnements, toutes périodes) :
+                #  - FMDProductCode : GTIN-14 du DataMatrix (directive anti-falsification)
+                #  - Dmpp codeType="CNK" : code pharmacie belge (code-barres 1D)
+                for ampp in children(el, "Ampp"):
+                    for adata in children(ampp, "Data"):
+                        g = text(adata, "FMDProductCode")
+                        if g and g.isdigit() and len(g) == 14:
+                            gtins.setdefault(g, k)
+                    for dmpp in children(ampp, "Dmpp"):
+                        c = dmpp.get("code")
+                        if dmpp.get("codeType") == "CNK" and c and c.isdigit():
+                            cnks.setdefault(c.zfill(7), k)
         el.clear()
 
     rows = sorted(products.values(), key=lambda r: key(r[0]))
+    index = {key(r[0]): i for i, r in enumerate(rows)}
+    codes = {
+        "gtin": {g: index[k] for g, k in gtins.items() if k in index},
+        "cnk": {c: index[k] for c, k in cnks.items() if k in index},
+    }
     stats["kept"] = len(rows)
-    return sam_id, rows, stats
+    return sam_id, rows, codes, stats
 
 
 def main():
@@ -184,17 +202,18 @@ def main():
             version = int(m.group(1)) if m else None
         else:
             zip_path, version = download_latest(tmp)
-        sam_id, rows, stats = parse_amp(zip_path)
+        sam_id, rows, codes, stats = parse_amp(zip_path)
 
     if stats["kept"] < 5000:  # garde-fou : export incomplet ou format changé
         raise RuntimeError(f"Trop peu de médicaments extraits ({stats['kept']}) : abandon.")
 
+    generated = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
     payload = {
         "source": "SAM v2 – AFMPS / eHealth (export public, réutilisation non officielle)",
         "sourceUrl": "https://www.samportal.be/fr/sam/access",
         "samId": sam_id,
         "samVersion": version,
-        "generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d"),
+        "generated": generated,
         "count": len(rows),
         "columns": ["name", "inn", "strength", "inactive"],
         "products": rows,
@@ -204,6 +223,13 @@ def main():
     with open(out, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
     print(f"{stats['total']} médicaments lus, {stats['kept']} retenus -> {out} ({os.path.getsize(out) / 1e6:.2f} Mo)")
+
+    # Codes des boîtes (fichier séparé, chargé seulement lors d'un scan)
+    # Les numéros renvoient à la position du produit dans "products" ci-dessus.
+    codes_out = out.replace(".json", "-codes.json")
+    with open(codes_out, "w", encoding="utf-8") as f:
+        json.dump({"samId": sam_id, "generated": generated, **codes}, f, separators=(",", ":"))
+    print(f"{len(codes['gtin'])} codes GTIN, {len(codes['cnk'])} codes CNK -> {codes_out} ({os.path.getsize(codes_out) / 1e6:.2f} Mo)")
 
 
 if __name__ == "__main__":

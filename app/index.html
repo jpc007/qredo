@@ -83,7 +83,10 @@
           </p>
           <p id="med-db-info" class="hint hint--source"></p>
           <div id="med-list" class="rows"></div>
-          <button id="btn-add-med" class="btn btn--ghost" type="button">＋ Ajouter un médicament</button>
+          <div class="btn-row">
+            <button id="btn-scan-med" class="btn btn--primary" type="button" hidden>📷 Scanner la boîte</button>
+            <button id="btn-add-med" class="btn btn--ghost" type="button">＋ Ajouter un médicament</button>
+          </div>
           <datalist id="dl-meds"></datalist>
         </section>
 
@@ -262,6 +265,21 @@
       <div class="scan-frame"></div>
       <p id="scan-status" class="overlay__hint">Visez le QR code QREDO…</p>
       <button id="btn-scan-close" class="btn btn--light" type="button">Fermer</button>
+    </div>
+
+    <!-- ============ SCANNER DE BOÎTE DE MÉDICAMENT (mobile) ============ -->
+    <div id="overlay-medscan" class="overlay overlay--dark" data-mode="barcode" hidden>
+      <video id="medscan-video" playsinline muted></video>
+      <div class="medscan-frame"></div>
+      <div class="medscan-panel">
+        <p id="medscan-status" class="medscan-status"></p>
+        <div id="medscan-results" class="medscan-results"></div>
+        <div class="btn-row medscan-actions">
+          <button id="btn-medscan-ocr" class="btn btn--light" type="button">🔤 Lire le nom</button>
+          <button id="btn-medscan-retry" class="btn btn--light" type="button">↺ Code-barres</button>
+          <button id="btn-medscan-close" class="btn btn--light" type="button">Fermer</button>
+        </div>
+      </div>
     </div>
 
     <!-- Message temporaire -->

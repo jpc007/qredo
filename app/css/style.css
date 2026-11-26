@@ -555,6 +555,105 @@ select:focus {
   position: relative;
 }
 
+/* ------------------- Scanner de boîte de médicament ------------------- */
+#medscan-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#overlay-medscan {
+  justify-content: flex-start;
+  padding-top: calc(18vh + env(safe-area-inset-top));
+}
+.medscan-frame {
+  position: relative;
+  width: 84vw;
+  max-width: 520px;
+  height: 30vh;
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+  transition: border-color 0.2s;
+}
+#overlay-medscan[data-mode='attention'] .medscan-frame {
+  border-color: var(--warn);
+  animation: medscan-pulse 1s ease-in-out infinite;
+}
+#overlay-medscan[data-mode='results'] .medscan-frame {
+  display: none;
+}
+@keyframes medscan-pulse {
+  50% {
+    border-color: #ffd54f;
+  }
+}
+.medscan-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85) 25%);
+  display: grid;
+  gap: 12px;
+}
+#overlay-medscan[data-mode='results'] .medscan-panel {
+  top: 0;
+  align-content: center;
+  background: rgba(0, 0, 0, 0.88);
+}
+.medscan-status {
+  margin: 0;
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+}
+.medscan-status[data-level='warn'] {
+  color: #ffd54f;
+}
+.medscan-status[data-level='ok'] {
+  color: #a5d6a7;
+}
+.medscan-results {
+  display: grid;
+  gap: 8px;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+.medscan-choice {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.medscan-choice small {
+  color: var(--muted);
+}
+.medscan-actions {
+  justify-content: center;
+}
+/* Boutons selon l'étape */
+#overlay-medscan[data-mode='barcode'] #btn-medscan-retry,
+#overlay-medscan[data-mode='ocr'] #btn-medscan-retry,
+#overlay-medscan[data-mode='ocr'] #btn-medscan-ocr,
+#overlay-medscan[data-mode='results'] #btn-medscan-ocr {
+  display: none;
+}
+#overlay-medscan[data-mode='attention'] #btn-medscan-ocr {
+  background: var(--warn);
+  border-color: var(--warn);
+  color: #1d2433;
+  animation: medscan-pulse 1s ease-in-out infinite;
+}
+
 /* ------------------------------ Impression ------------------------------ */
 .print-area {
   display: none;

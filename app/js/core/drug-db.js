@@ -72,6 +72,49 @@ export function searchDrugs(query, limit = 25) {
   return [...starts.sort(byActive), ...words.sort(byActive), ...inn.sort(byActive)].slice(0, limit);
 }
 
+/** Tous les produits (pour l'OCR). Tableau vide si la base n'est pas chargée. */
+export function allDrugs() {
+  return db?.products ?? [];
+}
+
+// ---------------------------------------------------------------------
+// Codes imprimés sur les boîtes : GTIN (DataMatrix) et CNK (code-barres)
+// Fichier séparé, chargé seulement lors du premier scan.
+// ---------------------------------------------------------------------
+const CODES_URL = 'data/medicaments-be-codes.json';
+let codes = null;
+let codesLoading = null;
+
+export function loadDrugCodes() {
+  if (codesLoading) return codesLoading;
+  codesLoading = Promise.all([loadDrugDb(), fetch(CODES_URL).then((r) => (r.ok ? r.json() : null))])
+    .then(([base, c]) => {
+      // Les deux fichiers doivent venir du même export SAM (positions identiques)
+      if (!base || !c || c.samId !== base.meta.samId) throw new Error('codes indisponibles');
+      codes = c;
+      return codes;
+    })
+    .catch(() => {
+      codesLoading = null;
+      return null;
+    });
+  return codesLoading;
+}
+
+/** Produit correspondant aux codes lus sur la boîte, ou null. */
+export function findDrugByCodes({ gtins = [], cnks = [] } = {}) {
+  if (!db || !codes) return null;
+  for (const g of gtins) {
+    const i = codes.gtin[g];
+    if (i !== undefined) return db.products[i];
+  }
+  for (const c of cnks) {
+    const i = codes.cnk[String(c).padStart(7, '0')];
+    if (i !== undefined) return db.products[i];
+  }
+  return null;
+}
+
 /**
  * Molécule correspondant à un nom saisi :
  *  1) nom exact d'un produit ("Medrol 4 mg")
