@@ -1,10 +1,14 @@
 # Publication automatique de l'application (dossier app/) sur GitHub Pages
-# à chaque envoi sur la branche main.
+# - à chaque envoi sur la branche main ;
+# - chaque lundi, pour rafraîchir la base des médicaments (SAM, AFMPS) ;
+# - à la demande (onglet Actions → Run workflow).
 name: Publier QREDO sur GitHub Pages
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 4 * * 1' # lundi 04:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -19,11 +23,27 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
+      # Base des médicaments belges : téléchargée depuis l'export public SAM
+      # (eHealth / AFMPS) puis convertie en app/data/medicaments-be.json.
+      # Si SAM est indisponible, on reprend la version déjà en ligne.
+      - name: Construire la base médicaments (SAM)
+        run: |
+          mkdir -p app/data
+          if python3 tools/sam/build-drug-db.py --out app/data/medicaments-be.json; then
+            echo "Base médicaments : construite depuis SAM"
+          elif curl -fsSL "https://jpc007.github.io/qredo/data/medicaments-be.json" -o app/data/medicaments-be.json; then
+            echo "::warning::SAM indisponible : base médicaments précédente conservée"
+          else
+            echo "::warning::Base médicaments indisponible : l'appli fonctionnera en saisie libre"
+          fi
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

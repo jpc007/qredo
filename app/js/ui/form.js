@@ -17,7 +17,8 @@ import {
   RELATIONS,
   SEXES,
 } from '../data/picklists.js';
-import { emptyDossier } from '../core/qr-text.js';
+import { emptyDossier, medToEn } from '../core/qr-text.js';
+import { isDrugDbLoaded, resolveDrug, searchDrugs } from '../core/drug-db.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -60,8 +61,14 @@ export function setupForm(form, onChange) {
 
   const dlA = $('#dl-allergens');
   ALLERGENS.forEach((a) => dlA.append(option(a.fr, '')));
+  // Suggestions de médicaments : base SAM (si chargée), sinon petite liste interne
   const dlM = $('#dl-meds');
   Object.keys(MED_BRAND_TO_INN).forEach((k) => dlM.append(option(k.charAt(0).toUpperCase() + k.slice(1), '')));
+  $('#med-list').addEventListener('input', (e) => {
+    if (e.target.dataset.k !== 'name') return;
+    updateMedSuggestions(e.target.value);
+    resolveMedRow(e.target.closest('.row'), { fillDose: true });
+  });
 
   $('#btn-add-allergy').addEventListener('click', () => {
     addAllergyRow({ substance: '', reaction: '' }).querySelector('input').focus();
@@ -110,23 +117,83 @@ export function addAllergyRow({ substance, reaction }) {
   return row;
 }
 
-export function addMedRow({ name, dose }) {
+export function addMedRow({ name, dose, inn }) {
   const row = document.createElement('div');
   row.className = 'row row--med';
   const n = document.createElement('input');
   n.type = 'text';
   n.dataset.k = 'name';
   n.setAttribute('list', 'dl-meds');
-  n.placeholder = 'Médicament (ex. Coversyl)';
+  n.setAttribute('autocomplete', 'off');
+  n.placeholder = 'Médicament (ex. Medrol)';
   n.value = name || '';
   const d = document.createElement('input');
   d.type = 'text';
   d.dataset.k = 'dose';
-  d.placeholder = 'Dose (ex. 5 mg)';
+  d.placeholder = 'Dose (ex. 4 mg)';
   d.value = dose || '';
-  row.append(n, d, removeButton());
+  // Molécule (DCI) trouvée dans la base SAM : c'est elle qui va dans le QR
+  const i = document.createElement('input');
+  i.type = 'hidden';
+  i.dataset.k = 'inn';
+  i.value = inn || '';
+  const hint = document.createElement('div');
+  hint.className = 'med-hint';
+  row.append(n, d, removeButton(), i, hint);
   $('#med-list').append(row);
+  resolveMedRow(row, { fillDose: false });
   return row;
+}
+
+/** Remplit la liste de suggestions avec les médicaments correspondants. */
+function updateMedSuggestions(query) {
+  if (!isDrugDbLoaded()) return;
+  const dl = $('#dl-meds');
+  dl.innerHTML = '';
+  for (const p of searchDrugs(query)) {
+    const label = `${p.inn}${p.strength ? ' · ' + p.strength : ''}${p.inactive ? ' (plus commercialisé)' : ''}`;
+    dl.append(option(p.name, label));
+  }
+}
+
+/**
+ * Cherche la molécule du médicament saisi et l'affiche sous la ligne.
+ * fillDose : préremplit la dose si le produit exact est reconnu.
+ */
+export function resolveMedRow(row, { fillDose = false } = {}) {
+  const name = $('[data-k="name"]', row).value.trim();
+  const dose = $('[data-k="dose"]', row);
+  const inn = $('[data-k="inn"]', row);
+  const hint = $('.med-hint', row);
+  hint.className = 'med-hint';
+  if (!name) {
+    inn.value = '';
+    hint.textContent = '';
+    return;
+  }
+  const r = resolveDrug(name);
+  if (r) {
+    inn.value = r.inn;
+    if (fillDose && r.exact && r.strength && !dose.value.trim()) dose.value = r.strength;
+    hint.textContent = `→ Molécule : ${r.inn}${r.exact && r.strength ? ' ' + r.strength : ''}`;
+    hint.classList.add('med-hint--ok');
+    return;
+  }
+  if (isDrugDbLoaded()) inn.value = ''; // pas trouvé dans la base
+  const fallback = inn.value || medToEn(name);
+  if (fallback !== name.toUpperCase()) {
+    hint.textContent = `→ Molécule : ${fallback}`;
+    hint.classList.add('med-hint--ok');
+  } else if (isDrugDbLoaded()) {
+    hint.textContent = 'Molécule non trouvée : le nom sera écrit tel quel dans le QR.';
+  } else {
+    hint.textContent = '';
+  }
+}
+
+/** Après le chargement de la base : met à jour toutes les lignes. */
+export function refreshMedRows() {
+  $$('#med-list .row').forEach((row) => resolveMedRow(row, { fillDose: false }));
 }
 
 /** Remplit le formulaire avec un dossier. */

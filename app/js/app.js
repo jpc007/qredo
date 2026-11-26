@@ -18,12 +18,13 @@ import {
   today,
 } from './core/storage.js';
 import { SAMPLES } from './data/sample-dossier.js';
-import { fillForm, readForm, setupForm } from './ui/form.js';
+import { fillForm, readForm, refreshMedRows, setupForm } from './ui/form.js';
+import { drugDbMeta, loadDrugDb } from './core/drug-db.js';
 import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js';
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 
-export const APP_VERSION = '0.8.0';
+export const APP_VERSION = '0.9.0';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -371,6 +372,25 @@ if (!state.updated) state.updated = today();
 fillForm(form, state);
 refresh();
 window.addEventListener('resize', debounce(refresh, 200));
+
+// Base des médicaments belges (SAM) : chargée en arrière-plan
+function showDrugDbInfo() {
+  const m = drugDbMeta();
+  $('med-db-info').textContent = m
+    ? `Suggestions : base officielle belge SAM (AFMPS / eHealth), ${m.count.toLocaleString('fr-BE')} médicaments, mise à jour du ${m.generated}.`
+    : 'Base des médicaments indisponible (hors ligne ?) : la saisie libre fonctionne quand même.';
+}
+loadDrugDb().then((db) => {
+  showDrugDbInfo();
+  if (!db) return;
+  refreshMedRows();
+  // Les molécules trouvées sont enregistrées, sans changer la date de mise à jour
+  const updated = state.updated;
+  state = readForm(form);
+  state.updated = updated;
+  saveDossier(state);
+  refresh();
+});
 
 // Liens de démonstration : .../?exemple (=1) … ?exemple=5 chargent un patient fictif
 const sampleParam = new URLSearchParams(location.search).get('exemple');

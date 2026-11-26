@@ -259,6 +259,24 @@ select:focus {
   }
 }
 
+/* Molécule trouvée sous chaque médicament */
+.med-hint {
+  grid-column: 1 / -1;
+  margin: -2px 0 4px 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.med-hint:empty {
+  display: none;
+}
+.med-hint--ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+.hint--source {
+  font-size: 0.78rem;
+}
+
 /* ------------------------------ Boutons ------------------------------ */
 .btn {
   min-height: 46px;

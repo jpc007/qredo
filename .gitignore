@@ -5,6 +5,10 @@
 !package.json
 qredo-*.png
 
+# Base médicaments : générée par GitHub Actions à chaque publication
+# (tools/sam/build-drug-db.py), pas stockée dans le dépôt
+app/data/medicaments-be.json
+
 # Documents internes : restent sur ce PC, jamais publiés
 MinimumlRequierement/
 docs/

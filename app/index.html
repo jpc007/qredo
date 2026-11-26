@@ -78,7 +78,10 @@
 
         <section class="card">
           <h2>💊 Médicaments</h2>
-          <p class="hint">Le nom commercial est converti en molécule internationale (ex. Coversyl → PERINDOPRIL).</p>
+          <p class="hint">
+            Tapez le nom que vous connaissez (ex. Medrol) : la molécule s'affiche dessous, c'est elle qui va dans le QR.
+          </p>
+          <p id="med-db-info" class="hint hint--source"></p>
           <div id="med-list" class="rows"></div>
           <button id="btn-add-med" class="btn btn--ghost" type="button">＋ Ajouter un médicament</button>
           <datalist id="dl-meds"></datalist>

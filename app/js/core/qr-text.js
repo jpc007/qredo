@@ -209,10 +209,13 @@ export function buildQrText(d, ascii = true) {
   const conditions = [...(d.conditions || []), ...splitOther(d.conditionsOther).map(up)];
   add('CONDITION', conditions.join('; '));
 
-  // Médicaments
+  // Médicaments : molécule de la base SAM si reconnue (m.inn), sinon conversion locale
   const meds = (d.meds || [])
     .filter((m) => String(m.name ?? '').trim())
-    .map((m) => [medToEn(m.name, ascii), doseToEn(m.dose, ascii)].filter(Boolean).join(' '));
+    .map((m) => {
+      const inn = m.inn ? clean(m.inn, ascii).toUpperCase() : medToEn(m.name, ascii);
+      return [inn, doseToEn(m.dose, ascii)].filter(Boolean).join(' ');
+    });
   add('MEDS', meds.join('; '));
 
   // Mesures
