@@ -32,6 +32,7 @@ export function emptyDossier() {
     firstName: '',
     sex: '',
     dob: '', // AAAA-MM-JJ
+    address: '',
     languages: '',
     noKnownAllergy: false,
     allergies: [], // [{ substance, reaction }]
@@ -185,6 +186,7 @@ export function buildQrText(d, ascii = true) {
     const age = ageFrom(d.dob);
     add('DOB', d.dob + (age !== '' ? ` (AGE ${age})` : ''));
   }
+  add('ADDRESS', clean(d.address, ascii));
 
   // Allergies
   const allergies = (d.allergies || [])
@@ -287,6 +289,9 @@ export function parseQrText(text) {
         break;
       case 'DOB':
         d.dob = v.trim().slice(0, 10);
+        break;
+      case 'ADDRESS':
+        d.address = v.trim();
         break;
       case 'ALLERGY':
         if (v.trim() === 'NONE KNOWN') {

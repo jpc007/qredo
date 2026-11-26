@@ -6,6 +6,7 @@
 // =====================================================================
 
 const base = {
+  address: '',
   languages: '',
   noKnownAllergy: false,
   allergies: [],
@@ -38,6 +39,7 @@ export const SAMPLES = [
       firstName: 'Jean-Pierre',
       sex: 'M',
       dob: '1975-06-14',
+      address: 'Rue des Lilas 24, 4000 Liège',
       languages: 'FR',
       allergies: [
         { substance: 'Pénicilline', reaction: 'ANAPHYLAXIS' },
@@ -76,6 +78,7 @@ export const SAMPLES = [
       firstName: 'Françoise',
       sex: 'F',
       dob: '1985-11-03',
+      address: 'Avenue des Tilleuls 8, 5000 Namur',
       languages: 'FR, EN',
       allergies: [
         { substance: 'Arachides', reaction: 'ANAPHYLAXIS' },
@@ -107,6 +110,7 @@ export const SAMPLES = [
       firstName: 'Marcel',
       sex: 'M',
       dob: '1938-02-21',
+      address: 'Zonneveldstraat 1, 3000 Leuven',
       languages: 'NL, FR',
       noKnownAllergy: true,
       anticoagulants: ['APIXABAN'],
@@ -140,6 +144,7 @@ export const SAMPLES = [
       firstName: 'Lucas',
       sex: 'M',
       dob: '2012-04-09',
+      address: 'Rue du Moulin 15, 1300 Wavre',
       languages: 'FR',
       allergies: [
         { substance: 'Piqûre d’abeille / guêpe', reaction: 'ANAPHYLAXIS' },
@@ -170,6 +175,7 @@ export const SAMPLES = [
       firstName: 'Nadia',
       sex: 'F',
       dob: '1993-07-30',
+      address: 'Chaussée de Mons 102, 1070 Anderlecht',
       languages: 'FR, AR',
       noKnownAllergy: true,
       conditions: ['PREGNANT'],
