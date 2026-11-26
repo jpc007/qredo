@@ -82,6 +82,42 @@ export const CONDITIONS = [
 ];
 
 // Lien avec la personne de contact (relation.<CODE>)
+// Opérations chirurgicales courantes (suggestions non obligatoires ; code anglais
+// écrit dans le QR, libellé traduit : 'surgery.CODE'). La splénectomie, les greffes
+// et les valves sont particulièrement utiles aux secours.
+export const SURGERIES = [
+  'APPENDECTOMY',
+  'CHOLECYSTECTOMY',
+  'LAPAROSCOPY',
+  'HERNIA REPAIR',
+  'HYSTERECTOMY',
+  'CESAREAN SECTION',
+  'TONSILLECTOMY',
+  'THYROIDECTOMY',
+  'MASTECTOMY',
+  'COLECTOMY',
+  'STOMA',
+  'BARIATRIC SURGERY',
+  'SPLENECTOMY',
+  'NEPHRECTOMY',
+  'PROSTATECTOMY',
+  'CORONARY BYPASS',
+  'HEART VALVE SURGERY',
+  'CORONARY ANGIOPLASTY',
+  'PACEMAKER IMPLANTATION',
+  'CAROTID SURGERY',
+  'LEG ARTERY BYPASS',
+  'HIP REPLACEMENT',
+  'KNEE REPLACEMENT',
+  'SPINAL SURGERY',
+  'CATARACT SURGERY',
+  'ORGAN TRANSPLANT',
+  'BRAIN SURGERY',
+  'LUNG SURGERY',
+  'TRACHEOSTOMY',
+  'AMPUTATION',
+];
+
 // Spécialités médicales (code anglais écrit dans le QR, libellé traduit : 'specialty.CODE')
 export const SPECIALTIES = [
   'CARDIOLOGY',

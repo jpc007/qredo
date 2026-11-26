@@ -17,7 +17,7 @@ export function normalizeDossier(d) {
   const base = emptyDossier();
   const out = { ...base, ...(d || {}) };
   out.contacts = [0, 1].map((i) => ({ ...base.contacts[i], ...((d && d.contacts && d.contacts[i]) || {}) }));
-  for (const k of ['allergies', 'implants', 'conditions', 'meds', 'specialists']) {
+  for (const k of ['allergies', 'implants', 'conditions', 'meds', 'specialists', 'surgeries']) {
     if (!Array.isArray(out[k])) out[k] = [];
   }
   // Ancienne rubrique "Anticoagulants" (supprimée) : transférée dans les

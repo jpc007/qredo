@@ -9,6 +9,7 @@
 const base = {
   address: '',
   specialists: [],
+  surgeries: [],
   languages: '',
   noKnownAllergy: false,
   allergies: [],
@@ -66,6 +67,11 @@ export const SAMPLES = [
         { name: 'Marie Dupont', relation: 'SPOUSE', phone: '+32 400 00 00 11' },
         { name: 'Thomas Dupont', relation: 'CHILD', phone: '+32 400 00 00 12' },
       ],
+      surgeries: [
+        { name: 'Appendicectomie (appendicite)', year: '1990' },
+        { name: 'Cure de hernie (inguinale, ombilicale)', year: '2010' },
+        { name: 'Chirurgie de valve cardiaque', year: '2018' },
+      ],
       specialists: [{ name: 'Dr Sophie Lambert', specialty: 'Cardiologue', phone: '+32 400 00 00 14' }],
       gpName: 'Dr Martin Dubois',
       gpPhone: '+32 400 00 00 13',
@@ -99,6 +105,7 @@ export const SAMPLES = [
         { name: 'Luc Lemaître', relation: 'SPOUSE', phone: '+32 400 00 00 21' },
         { name: 'Anne Dubreucq', relation: 'SIBLING', phone: '+32 400 00 00 22' },
       ],
+      surgeries: [{ name: 'Appendicectomie (appendicite)', year: '2004' }],
       specialists: [
         { name: 'Dr Anne Leroy', specialty: 'Neurologue', phone: '+32 400 00 00 24' },
         { name: 'Dr Paul Simon', specialty: 'Endocrinologue / diabétologue', phone: '+32 400 00 00 25' },

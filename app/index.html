@@ -127,6 +127,16 @@
         </section>
 
         <section class="card">
+          <h2 data-i18n="surgeries.title">🩹 Opérations chirurgicales</h2>
+          <p class="hint" data-i18n="surgeries.hint">Choisissez dans la liste ou tapez librement. L’année est facultative.</p>
+          <div id="surgery-list" class="rows"></div>
+          <button id="btn-add-surgery" class="btn btn--ghost" type="button" data-i18n="surgeries.add">
+            ＋ Ajouter une opération
+          </button>
+          <datalist id="dl-surgeries"></datalist>
+        </section>
+
+        <section class="card">
           <h2 data-i18n="meds.title">💊 Médicaments</h2>
           <p class="hint" data-i18n="meds.hint">
             Tapez le nom que vous connaissez (ex. Medrol) : la molécule s’affiche dessous, c’est elle qui va dans le QR.
@@ -311,7 +321,7 @@
             </button>
             <button id="btn-share" class="btn" type="button" data-i18n="wallpaper.share" hidden>📤 Partager</button>
           </div>
-          <p class="hint" data-i18n-html="wallpaper.help">
+          <p id="wallpaper-help" class="hint" data-i18n-html="wallpaper.help">
             Puis : Galerie → l’image → ⋮ → <em>Définir comme fond d’écran</em> → <em>Écran de verrouillage</em>.
           </p>
         </section>

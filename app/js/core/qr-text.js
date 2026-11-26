@@ -17,6 +17,7 @@ import {
   REACTIONS,
   RELATIONS,
   SPECIALTIES,
+  SURGERIES,
 } from '../data/picklists.js';
 import { t, translationsOf } from '../i18n/i18n.js';
 
@@ -55,6 +56,7 @@ export function emptyDossier() {
     ],
     gpName: '',
     specialists: [], // [{ name, specialty, phone }]
+    surgeries: [], // [{ name, year }]
     gpPhone: '',
     notes: '',
     updated: '',
@@ -162,6 +164,27 @@ const SPECIALTY_LOOKUP = (() => {
   return map;
 })();
 
+// Opérations : libellé dans les 7 langues (ou un morceau : "cœlioscopie"), ou code anglais
+const SURGERY_LOOKUP = (() => {
+  const map = new Map();
+  for (const code of SURGERIES) {
+    map.set(key(code), code);
+    for (const label of translationsOf(`surgery.${code}`)) {
+      map.set(key(label), code);
+      for (const part of label.split(/[/(),]/)) if (key(part).length > 3 && !map.has(key(part))) map.set(key(part), code);
+    }
+  }
+  return map;
+})();
+
+/** Opération saisie -> code anglais ("Appendicectomie" -> "APPENDECTOMY"), sinon texte nettoyé. */
+export function surgeryToEn(name, ascii = true) {
+  const code = SURGERY_LOOKUP.get(key(name));
+  if (code) return code;
+  const c = clean(name, ascii).replace(/[()]/g, '');
+  return ascii ? c.toUpperCase() : c;
+}
+
 /** Spécialité saisie -> code anglais ("Cardiologue" -> "CARDIOLOGY"), sinon texte nettoyé. */
 export function specialtyToEn(specialty, ascii = true) {
   const code = SPECIALTY_LOOKUP.get(key(specialty));
@@ -242,6 +265,15 @@ export function buildQrText(d, ascii = true) {
   // Maladies
   const conditions = [...(d.conditions || []), ...splitOther(d.conditionsOther).map(up)];
   add('CONDITION', conditions.join('; '));
+
+  // Opérations chirurgicales (avec l'année si connue)
+  const surgeries = (d.surgeries || [])
+    .filter((s) => String(s.name ?? '').trim())
+    .map((s) => {
+      const year = String(s.year ?? '').replace(/\D/g, '').slice(0, 4);
+      return surgeryToEn(s.name, ascii) + (year ? ` (${year})` : '');
+    });
+  add('SURGERY', surgeries.join('; '));
 
   // Médicaments : molécule de la base SAM si reconnue (m.inn), sinon conversion locale
   const meds = (d.meds || [])
@@ -405,6 +437,13 @@ export function parseQrText(text) {
         d.gpPhone = g[2] || '';
         break;
       }
+      case 'SURGERY':
+        for (const it of items(v)) {
+          const m = it.match(/^(.*?)\s*(?:\((\d{4})\))?$/);
+          const code = m[1];
+          d.surgeries.push({ name: isCode(SURGERIES, code) ? t(`surgery.${code}`) : code, year: m[2] || '' });
+        }
+        break;
       case 'SPECIALIST': {
         const s = v.match(/^(.*?)\s*(?:\(([^)]*)\))?\s*(\+?\d+)?$/);
         const code = s[2] || '';

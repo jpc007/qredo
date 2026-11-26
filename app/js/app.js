@@ -26,9 +26,10 @@ import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 import { setupLanguageMenu } from './ui/lang-menu.js';
 import { renderInteractions } from './ui/interactions-panel.js';
+import { isIOS } from './core/device.js';
 import { applyTranslations, getLocale, onLanguageChange, t } from './i18n/i18n.js';
 
-export const APP_VERSION = '1.0.3';
+export const APP_VERSION = '1.0.5';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -369,6 +370,8 @@ document.addEventListener('visibilitychange', () => {
 // Démarrage
 // ---------------------------------------------------------------------
 $('app-version').textContent = `· v${APP_VERSION}`;
+// Sur iPhone / iPad : aide "fond d'écran" propre à iOS (Photos -> Utiliser en fond d'écran)
+if (isIOS()) $('wallpaper-help').dataset.i18nHtml = 'wallpaper.helpIos';
 applyTranslations(); // textes de la page dans la langue choisie
 setupLanguageMenu();
 setupForm(form, onFormChange);

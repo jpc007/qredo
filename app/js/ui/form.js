@@ -19,6 +19,7 @@ import {
   RELATIONS,
   SEXES,
   SPECIALTIES,
+  SURGERIES,
 } from '../data/picklists.js';
 import { emptyDossier, medToEn } from '../core/qr-text.js';
 import { isDrugDbLoaded, resolveDrug, searchDrugs } from '../core/drug-db.js';
@@ -98,6 +99,17 @@ export function setupForm(form, onChange) {
   });
   $('#btn-add-med').addEventListener('click', () => {
     addMedRow({ name: '', dose: '' }).querySelector('input').focus();
+  });
+
+  // Opérations chirurgicales : suggestions traduites (non obligatoires)
+  const dlO = $('#dl-surgeries');
+  for (const code of SURGERIES) {
+    const o = option(t(`surgery.${code}`), '');
+    o.dataset.i18nValue = `surgery.${code}`;
+    dlO.append(o);
+  }
+  $('#btn-add-surgery').addEventListener('click', () => {
+    addSurgeryRow({ name: '', year: '' }).querySelector('input').focus();
   });
 
   // Médecins spécialistes : suggestions de spécialités traduites
@@ -234,6 +246,30 @@ export function refreshMedRows() {
   $$('#med-list .row').forEach((row) => resolveMedRow(row, { fillDose: false }));
 }
 
+/** Ligne "opération chirurgicale" : nom (suggestions traduites ou texte libre) + année. */
+export function addSurgeryRow({ name, year }) {
+  const row = document.createElement('div');
+  row.className = 'row row--surgery';
+  const n = document.createElement('input');
+  n.type = 'text';
+  n.dataset.k = 'name';
+  n.setAttribute('list', 'dl-surgeries');
+  n.dataset.i18nPlaceholder = 'surgeries.namePlaceholder';
+  n.placeholder = t('surgeries.namePlaceholder');
+  n.value = name || '';
+  const y = document.createElement('input');
+  y.type = 'text';
+  y.inputMode = 'numeric';
+  y.maxLength = 4;
+  y.dataset.k = 'year';
+  y.dataset.i18nPlaceholder = 'surgeries.yearPlaceholder';
+  y.placeholder = t('surgeries.yearPlaceholder');
+  y.value = year || '';
+  row.append(n, y, removeButton());
+  $('#surgery-list').append(row);
+  return row;
+}
+
 /** Ligne "médecin spécialiste" : nom, spécialité (suggestions traduites), téléphone. */
 export function addSpecialistRow({ name, specialty, phone }) {
   const row = document.createElement('div');
@@ -275,6 +311,8 @@ export function fillForm(form, d) {
   (d.meds || []).forEach(addMedRow);
   $('#specialist-list').innerHTML = '';
   (d.specialists || []).forEach(addSpecialistRow);
+  $('#surgery-list').innerHTML = '';
+  (d.surgeries || []).forEach(addSurgeryRow);
 
   for (const box of $$('[data-contact]', form)) {
     const c = (d.contacts || [])[+box.dataset.contact] || {};
@@ -296,5 +334,6 @@ export function readForm(form) {
   d.meds = $$('#med-list .row').map(rowData);
   d.contacts = $$('[data-contact]', form).map(rowData);
   d.specialists = $$('#specialist-list .row').map(rowData);
+  d.surgeries = $$('#surgery-list .row').map(rowData);
   return d;
 }
