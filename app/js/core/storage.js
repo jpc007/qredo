@@ -19,6 +19,8 @@ export function normalizeDossier(d) {
   for (const k of ['allergies', 'anticoagulants', 'implants', 'conditions', 'meds']) {
     if (!Array.isArray(out[k])) out[k] = [];
   }
+  // Ancienne valeur "ANAPHYLAXIS" (retirée de la liste) -> "SEVERE"
+  out.allergies = out.allergies.map((a) => (a.reaction === 'ANAPHYLAXIS' ? { ...a, reaction: 'SEVERE' } : a));
   return out;
 }
 

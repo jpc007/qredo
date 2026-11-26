@@ -42,7 +42,7 @@ export const SAMPLES = [
       address: 'Rue des Lilas 24, 4000 Liège',
       languages: 'FR',
       allergies: [
-        { substance: 'Pénicilline', reaction: 'ANAPHYLAXIS' },
+        { substance: 'Pénicilline', reaction: 'SEVERE' },
         { substance: 'Arachides / cacahuètes', reaction: 'SEVERE' },
         { substance: 'Latex', reaction: 'MILD' },
       ],
@@ -81,7 +81,7 @@ export const SAMPLES = [
       address: 'Avenue des Tilleuls 8, 5000 Namur',
       languages: 'FR, EN',
       allergies: [
-        { substance: 'Arachides', reaction: 'ANAPHYLAXIS' },
+        { substance: 'Arachides', reaction: 'SEVERE' },
         { substance: 'Produit de contraste iodé', reaction: 'MODERATE' },
       ],
       implants: ['INSULIN PUMP'],
@@ -147,7 +147,7 @@ export const SAMPLES = [
       address: 'Rue du Moulin 15, 1300 Wavre',
       languages: 'FR',
       allergies: [
-        { substance: 'Piqûre d’abeille / guêpe', reaction: 'ANAPHYLAXIS' },
+        { substance: 'Piqûre d’abeille / guêpe', reaction: 'SEVERE' },
         { substance: 'Amoxicilline', reaction: 'MILD' },
       ],
       conditions: ['ASTHMA'],

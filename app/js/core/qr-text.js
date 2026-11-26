@@ -301,7 +301,9 @@ export function parseQrText(text) {
         for (const it of items(v)) {
           const a = it.match(/^(.*?)\s*(?:\(([A-Z ]+)\))?$/);
           const sub = a[1];
-          const reaction = isCode(REACTIONS, a[2]) ? a[2] : '';
+          // Anciens QR : "ANAPHYLAXIS" n'existe plus -> converti en "SEVERE"
+          const r = a[2] === 'ANAPHYLAXIS' ? 'SEVERE' : a[2];
+          const reaction = isCode(REACTIONS, r) ? r : '';
           const label = isCode(ALLERGENS, sub) ? frLabel(ALLERGENS, sub) : sub;
           d.allergies.push({ substance: label, reaction });
         }

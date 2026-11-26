@@ -17,7 +17,6 @@ export const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 // Sévérité de la réaction allergique
 export const REACTIONS = [
   { en: '', fr: '— réaction ? —' },
-  { en: 'ANAPHYLAXIS', fr: 'Anaphylaxie / choc' },
   { en: 'SEVERE', fr: 'Grave (œdème, gêne respiratoire)' },
   { en: 'MODERATE', fr: 'Modérée' },
   { en: 'MILD', fr: 'Légère (urticaire, démangeaisons)' },
