@@ -77,11 +77,49 @@ export const CONDITIONS = [
   'CANCER UNDER TREATMENT',
   'IMMUNOSUPPRESSED',
   'PREGNANT',
-  'HEARING IMPAIRED',
-  'VISUALLY IMPAIRED',
 ];
 
-// Lien avec la personne de contact (relation.<CODE>)
+// Handicaps (cases à cocher ; libellé traduit : 'disability.CODE').
+// "Malentendant" et "Malvoyant" étaient avant dans les maladies : repris ici.
+export const DISABILITIES = [
+  'REDUCED MOBILITY',
+  'WHEELCHAIR USER',
+  'VISUALLY IMPAIRED',
+  'BLIND',
+  'HEARING IMPAIRED',
+  'DEAF',
+  'SPEECH IMPAIRED',
+  'PARALYSIS',
+  'AMPUTEE',
+  'INTELLECTUAL DISABILITY',
+  'AUTISM',
+  'COGNITIVE IMPAIRMENT',
+];
+
+// Vaccins principaux (suggestions ; libellé traduit : 'vaccine.CODE')
+export const VACCINES = [
+  'TETANUS',
+  'COVID-19',
+  'INFLUENZA',
+  'PNEUMOCOCCAL',
+  'HEPATITIS B',
+  'HEPATITIS A',
+  'MMR',
+  'SHINGLES',
+  'RSV',
+  'MENINGOCOCCAL',
+  'HPV',
+  'POLIO',
+  'YELLOW FEVER',
+  'RABIES',
+  'TYPHOID',
+  'TICK-BORNE ENCEPHALITIS',
+  'BCG',
+];
+
+// Types d'assurance (suggestions ; texte libre possible ; 'insurancetype.CODE')
+export const INSURANCE_TYPES = ['HEALTH', 'HOSPITALIZATION', 'REPATRIATION', 'TRAVEL', 'ACCIDENT', 'OTHER'];
+
 // Opérations chirurgicales courantes (suggestions non obligatoires ; code anglais
 // écrit dans le QR, libellé traduit : 'surgery.CODE'). La splénectomie, les greffes
 // et les valves sont particulièrement utiles aux secours.

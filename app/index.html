@@ -53,6 +53,8 @@
     <main class="layout">
       <!-- ========================== FORMULAIRE ========================== -->
       <form id="dossier-form" class="form" autocomplete="off" novalidate>
+        <div id="updated-banner" class="updated-banner" role="status"></div>
+
         <section class="card">
           <h2 data-i18n="identity.title">👤 Identité</h2>
           <div class="grid grid--2">
@@ -127,6 +129,15 @@
         </section>
 
         <section class="card">
+          <h2 data-i18n="disability.title">♿ Handicap</h2>
+          <div id="checks-disabilities" class="checks"></div>
+          <label
+            ><span data-i18n="disability.other">Autres (séparés par des virgules)</span
+            ><input data-field="disabilitiesOther" type="text"
+          /></label>
+        </section>
+
+        <section class="card">
           <h2 data-i18n="surgeries.title">🩹 Opérations chirurgicales</h2>
           <p class="hint" data-i18n="surgeries.hint">Choisissez dans la liste ou tapez librement. L’année est facultative.</p>
           <div id="surgery-list" class="rows"></div>
@@ -134,6 +145,21 @@
             ＋ Ajouter une opération
           </button>
           <datalist id="dl-surgeries"></datalist>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="hosp.title">🏨 Dernière hospitalisation</h2>
+          <div class="grid grid--2">
+            <label><span data-i18n="hosp.date">Date d’entrée</span><input data-field="hospDate" type="date" /></label>
+            <label
+              ><span data-i18n="hosp.place">Hôpital</span
+              ><input data-field="hospPlace" type="text" data-i18n-placeholder="hosp.placePlaceholder" placeholder="ex. CHU de Liège"
+            /></label>
+          </div>
+          <label
+            ><span data-i18n="hosp.reason">Raison</span
+            ><input data-field="hospReason" type="text" data-i18n-placeholder="hosp.reasonPlaceholder" placeholder="ex. Décompensation cardiaque"
+          /></label>
         </section>
 
         <section class="card">
@@ -153,6 +179,18 @@
             </button>
           </div>
           <datalist id="dl-meds"></datalist>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="vaccines.title">💉 Vaccins</h2>
+          <p class="hint" data-i18n="vaccines.hint">
+            Choisissez dans la liste ou tapez librement, avec la date de la dernière injection.
+          </p>
+          <div id="vaccine-list" class="rows"></div>
+          <button id="btn-add-vaccine" class="btn btn--ghost" type="button" data-i18n="vaccines.add">
+            ＋ Ajouter un vaccin
+          </button>
+          <datalist id="dl-vaccines"></datalist>
         </section>
 
         <section class="card">
@@ -222,6 +260,24 @@
         </section>
 
         <section class="card">
+          <h2 data-i18n="trusted.title">🧑‍🤝‍🧑 Personne de confiance</h2>
+          <p class="hint" data-i18n="trusted.hint">
+            Une personne réputée de confiance, qui peut être prévenue (à part des personnes à prévenir).
+          </p>
+          <div class="grid grid--3">
+            <label><span data-i18n="trusted.name">Nom</span><input data-field="trustedName" type="text" /></label>
+            <label
+              ><span data-i18n="trusted.relation">Lien</span
+              ><select data-field="trustedRelation" class="sel-relation"></select
+            ></label>
+            <label
+              ><span data-i18n="trusted.phone">Téléphone</span
+              ><input data-field="trustedPhone" type="tel" placeholder="+32 …"
+            /></label>
+          </div>
+        </section>
+
+        <section class="card">
           <h2 data-i18n="gp.title">👨‍⚕️ Médecin traitant</h2>
           <div class="grid grid--2">
             <label
@@ -240,6 +296,16 @@
             ＋ Ajouter un spécialiste
           </button>
           <datalist id="dl-specialties"></datalist>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="insurance.title">🛡️ Assurances</h2>
+          <p class="hint" data-i18n="insurance.hint">Nom de l’assurance, numéro de police et à quoi elle sert.</p>
+          <div id="insurance-list" class="rows"></div>
+          <button id="btn-add-insurance" class="btn btn--ghost" type="button" data-i18n="insurance.add">
+            ＋ Ajouter une assurance
+          </button>
+          <datalist id="dl-insurance-types"></datalist>
         </section>
 
         <section class="card">

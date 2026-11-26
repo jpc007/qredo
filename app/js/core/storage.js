@@ -17,8 +17,15 @@ export function normalizeDossier(d) {
   const base = emptyDossier();
   const out = { ...base, ...(d || {}) };
   out.contacts = [0, 1].map((i) => ({ ...base.contacts[i], ...((d && d.contacts && d.contacts[i]) || {}) }));
-  for (const k of ['allergies', 'implants', 'conditions', 'meds', 'specialists', 'surgeries']) {
+  for (const k of ['allergies', 'implants', 'conditions', 'meds', 'specialists', 'surgeries', 'disabilities', 'vaccines', 'insurances']) {
     if (!Array.isArray(out[k])) out[k] = [];
+  }
+  // "Malentendant" / "Malvoyant" : passés des maladies au handicap
+  for (const code of ['HEARING IMPAIRED', 'VISUALLY IMPAIRED']) {
+    if (out.conditions.includes(code)) {
+      out.conditions = out.conditions.filter((c) => c !== code);
+      if (!out.disabilities.includes(code)) out.disabilities.push(code);
+    }
   }
   // Ancienne rubrique "Anticoagulants" (supprimée) : transférée dans les
   // médicaments, sans doublon, pour ne perdre aucune information

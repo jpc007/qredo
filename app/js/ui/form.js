@@ -20,6 +20,9 @@ import {
   SEXES,
   SPECIALTIES,
   SURGERIES,
+  DISABILITIES,
+  VACCINES,
+  INSURANCE_TYPES,
 } from '../data/picklists.js';
 import { emptyDossier, medToEn } from '../core/qr-text.js';
 import { isDrugDbLoaded, resolveDrug, searchDrugs } from '../core/drug-db.js';
@@ -77,6 +80,7 @@ export function setupForm(form, onChange) {
 
   buildChecks($('#checks-implants'), IMPLANTS, 'implants', 'implant');
   buildChecks($('#checks-conditions'), CONDITIONS, 'conditions', 'condition');
+  buildChecks($('#checks-disabilities'), DISABILITIES, 'disabilities', 'disability');
 
   // Suggestions d'allergènes : la valeur proposée est le libellé traduit
   const dlA = $('#dl-allergens');
@@ -99,6 +103,16 @@ export function setupForm(form, onChange) {
   });
   $('#btn-add-med').addEventListener('click', () => {
     addMedRow({ name: '', dose: '' }).querySelector('input').focus();
+  });
+
+  // Vaccins et types d'assurance : suggestions traduites (texte libre possible)
+  fillSuggestions($('#dl-vaccines'), VACCINES, 'vaccine');
+  fillSuggestions($('#dl-insurance-types'), INSURANCE_TYPES, 'insurancetype');
+  $('#btn-add-vaccine').addEventListener('click', () => {
+    addVaccineRow({ name: '', date: '' }).querySelector('input').focus();
+  });
+  $('#btn-add-insurance').addEventListener('click', () => {
+    addInsuranceRow({ name: '', number: '', type: '' }).querySelector('input').focus();
   });
 
   // Opérations chirurgicales : suggestions traduites (non obligatoires)
@@ -246,6 +260,56 @@ export function refreshMedRows() {
   $$('#med-list .row').forEach((row) => resolveMedRow(row, { fillDose: false }));
 }
 
+/** Suggestions (datalist) : libellés traduits d'une liste de codes. */
+function fillSuggestions(datalist, codes, prefix) {
+  for (const code of codes) {
+    const o = option(t(`${prefix}.${code}`), '');
+    o.dataset.i18nValue = `${prefix}.${code}`;
+    datalist.append(o);
+  }
+}
+
+/** Champ de saisie d'une ligne ajoutée (placeholder traduit). */
+function rowInput(k, { type = 'text', placeholder, list, value, ...attrs } = {}) {
+  const i = document.createElement('input');
+  i.type = type;
+  i.dataset.k = k;
+  if (placeholder) {
+    i.dataset.i18nPlaceholder = placeholder;
+    i.placeholder = t(placeholder);
+  }
+  if (list) i.setAttribute('list', list);
+  Object.assign(i, attrs);
+  i.value = value || '';
+  return i;
+}
+
+/** Ligne "vaccin" : nom (suggestions ou texte libre) + date de la dernière injection. */
+export function addVaccineRow({ name, date }) {
+  const row = document.createElement('div');
+  row.className = 'row row--vaccine';
+  const d = rowInput('date', { type: 'date', value: date });
+  d.dataset.i18nAriaLabel = 'vaccines.date';
+  d.setAttribute('aria-label', t('vaccines.date'));
+  row.append(rowInput('name', { placeholder: 'vaccines.namePlaceholder', list: 'dl-vaccines', value: name }), d, removeButton());
+  $('#vaccine-list').append(row);
+  return row;
+}
+
+/** Ligne "assurance" : nom, n° de police, type (suggestions ou texte libre). */
+export function addInsuranceRow({ name, number, type }) {
+  const row = document.createElement('div');
+  row.className = 'row row--insurance';
+  row.append(
+    rowInput('name', { placeholder: 'insurance.namePlaceholder', value: name }),
+    rowInput('number', { placeholder: 'insurance.numberPlaceholder', value: number }),
+    rowInput('type', { placeholder: 'insurance.typePlaceholder', list: 'dl-insurance-types', value: type }),
+    removeButton(),
+  );
+  $('#insurance-list').append(row);
+  return row;
+}
+
 /** Ligne "opération chirurgicale" : nom (suggestions traduites ou texte libre) + année. */
 export function addSurgeryRow({ name, year }) {
   const row = document.createElement('div');
@@ -313,6 +377,10 @@ export function fillForm(form, d) {
   (d.specialists || []).forEach(addSpecialistRow);
   $('#surgery-list').innerHTML = '';
   (d.surgeries || []).forEach(addSurgeryRow);
+  $('#vaccine-list').innerHTML = '';
+  (d.vaccines || []).forEach(addVaccineRow);
+  $('#insurance-list').innerHTML = '';
+  (d.insurances || []).forEach(addInsuranceRow);
 
   for (const box of $$('[data-contact]', form)) {
     const c = (d.contacts || [])[+box.dataset.contact] || {};
@@ -326,7 +394,7 @@ export function readForm(form) {
   for (const el of $$('[data-field]', form)) {
     d[el.dataset.field] = el.type === 'checkbox' ? el.checked : el.value.trim();
   }
-  for (const group of ['implants', 'conditions']) {
+  for (const group of ['implants', 'conditions', 'disabilities']) {
     d[group] = $$(`[data-group="${group}"]:checked`, form).map((el) => el.value);
   }
   const rowData = (row) => Object.fromEntries($$('[data-k]', row).map((el) => [el.dataset.k, el.value.trim()]));
@@ -335,5 +403,7 @@ export function readForm(form) {
   d.contacts = $$('[data-contact]', form).map(rowData);
   d.specialists = $$('#specialist-list .row').map(rowData);
   d.surgeries = $$('#surgery-list .row').map(rowData);
+  d.vaccines = $$('#vaccine-list .row').map(rowData);
+  d.insurances = $$('#insurance-list .row').map(rowData);
   return d;
 }

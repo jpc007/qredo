@@ -18,6 +18,9 @@ import {
   RELATIONS,
   SPECIALTIES,
   SURGERIES,
+  DISABILITIES,
+  VACCINES,
+  INSURANCE_TYPES,
 } from '../data/picklists.js';
 import { t, translationsOf } from '../i18n/i18n.js';
 
@@ -57,6 +60,16 @@ export function emptyDossier() {
     gpName: '',
     specialists: [], // [{ name, specialty, phone }]
     surgeries: [], // [{ name, year }]
+    disabilities: [], // codes
+    disabilitiesOther: '',
+    hospDate: '', // dernière hospitalisation : date d'entrée, hôpital, raison
+    hospPlace: '',
+    hospReason: '',
+    vaccines: [], // [{ name, date }] date de la dernière injection
+    trustedName: '', // personne de confiance (une seule)
+    trustedRelation: '',
+    trustedPhone: '',
+    insurances: [], // [{ name, number, type }]
     gpPhone: '',
     notes: '',
     updated: '',
@@ -152,6 +165,31 @@ const ALLERGEN_LOOKUP = (() => {
 })();
 
 // Spécialités : libellé dans n'importe laquelle des 7 langues, ou code anglais
+/** Dictionnaire libellé (7 langues) -> code anglais, pour une liste de codes. */
+function makeLookup(codes, prefix) {
+  const map = new Map();
+  for (const code of codes) {
+    map.set(key(code), code);
+    for (const label of translationsOf(`${prefix}.${code}`)) {
+      map.set(key(label), code);
+      for (const part of label.split(/[/(),–—]/)) if (key(part).length > 3 && !map.has(key(part))) map.set(key(part), code);
+    }
+  }
+  return map;
+}
+const VACCINE_LOOKUP = makeLookup(VACCINES, 'vaccine');
+const INSURANCE_TYPE_LOOKUP = makeLookup(INSURANCE_TYPES, 'insurancetype');
+
+/** Texte saisi -> code anglais si reconnu, sinon texte nettoyé (majuscules, sans parenthèses). */
+function lookupToEn(map, text, ascii = true) {
+  const code = map.get(key(text));
+  if (code) return code;
+  const c = clean(text, ascii).replace(/[()]/g, '');
+  return ascii ? c.toUpperCase() : c;
+}
+export const vaccineToEn = (name, ascii = true) => lookupToEn(VACCINE_LOOKUP, name, ascii);
+export const insuranceTypeToEn = (type, ascii = true) => lookupToEn(INSURANCE_TYPE_LOOKUP, type, ascii);
+
 const SPECIALTY_LOOKUP = (() => {
   const map = new Map();
   for (const code of SPECIALTIES) {
@@ -266,6 +304,10 @@ export function buildQrText(d, ascii = true) {
   const conditions = [...(d.conditions || []), ...splitOther(d.conditionsOther).map(up)];
   add('CONDITION', conditions.join('; '));
 
+  // Handicap
+  const disabilities = [...(d.disabilities || []), ...splitOther(d.disabilitiesOther).map(up)];
+  add('DISABILITY', disabilities.join('; '));
+
   // Opérations chirurgicales (avec l'année si connue)
   const surgeries = (d.surgeries || [])
     .filter((s) => String(s.name ?? '').trim())
@@ -275,6 +317,12 @@ export function buildQrText(d, ascii = true) {
     });
   add('SURGERY', surgeries.join('; '));
 
+  // Dernière hospitalisation : date, (hôpital), raison
+  if (d.hospDate || String(d.hospPlace ?? '').trim() || String(d.hospReason ?? '').trim()) {
+    const place = up(d.hospPlace).replace(/[()]/g, '');
+    add('HOSPITALIZATION', [d.hospDate, place ? `(${place})` : '', up(d.hospReason)].filter(Boolean).join(' '));
+  }
+
   // Médicaments : molécule de la base SAM si reconnue (m.inn), sinon conversion locale
   const meds = (d.meds || [])
     .filter((m) => String(m.name ?? '').trim())
@@ -283,6 +331,12 @@ export function buildQrText(d, ascii = true) {
       return [inn, doseToEn(m.dose, ascii)].filter(Boolean).join(' ');
     });
   add('MEDS', meds.join('; '));
+
+  // Vaccins : date de la dernière injection
+  const vaccines = (d.vaccines || [])
+    .filter((v) => String(v.name ?? '').trim())
+    .map((v) => [vaccineToEn(v.name, ascii), String(v.date ?? '').trim()].filter(Boolean).join(' '));
+  add('VACCINE', vaccines.join('; '));
 
   // Mesures
   add('BLOOD', d.bloodGroup);
@@ -297,6 +351,13 @@ export function buildQrText(d, ascii = true) {
     if (phone(c.phone)) parts.push(phone(c.phone));
     add('CONTACT', parts.filter(Boolean).join(' '));
   }
+  // Personne de confiance (une seule)
+  if (String(d.trustedName ?? '').trim() || phone(d.trustedPhone)) {
+    const parts = [up(d.trustedName)];
+    if (d.trustedRelation) parts.push(`(${d.trustedRelation})`);
+    if (phone(d.trustedPhone)) parts.push(phone(d.trustedPhone));
+    add('TRUSTED PERSON', parts.filter(Boolean).join(' '));
+  }
   const gp = [up(d.gpName), phone(d.gpPhone)].filter(Boolean).join(' ');
   add('GP', gp);
 
@@ -308,6 +369,16 @@ export function buildQrText(d, ascii = true) {
     if (phone(s.phone)) parts.push(phone(s.phone));
     add('SPECIALIST', parts.filter(Boolean).join(' '));
   }
+
+  // Assurances : nom, numéro de police, type (rapatriement, hospitalisation…)
+  const insurances = (d.insurances || [])
+    .filter((i) => String(i.name ?? '').trim() || String(i.number ?? '').trim())
+    .map((i) => {
+      const number = String(i.number ?? '').replace(/[^A-Za-z0-9./-]/g, '');
+      const type = String(i.type ?? '').trim() ? `(${insuranceTypeToEn(i.type, ascii)})` : '';
+      return [up(i.name).replace(/[()]/g, ''), number ? `NO:${number}` : '', type].filter(Boolean).join(' ');
+    });
+  add('INSURANCE', insurances.join('; '));
 
   // Divers
   add('LANG', up(d.languages));
@@ -342,7 +413,7 @@ export function parseQrText(text) {
       .filter(Boolean);
 
   for (const raw of text.split(/\r?\n/)) {
-    const m = raw.match(/^([A-Z]+):\s?(.*)$/);
+    const m = raw.match(/^([A-Z][A-Z ]*):\s?(.*)$/); // clé : mots en majuscules
     if (!m) continue;
     const [, k, v] = m;
 
@@ -394,7 +465,11 @@ export function parseQrText(text) {
       }
       case 'CONDITION': {
         const other = [];
-        for (const it of items(v)) (isCode(CONDITIONS, it) ? d.conditions : other).push(it);
+        for (const it of items(v)) {
+          if (isCode(CONDITIONS, it)) d.conditions.push(it);
+          else if (isCode(DISABILITIES, it)) d.disabilities.push(it); // anciens QR (malentendant…)
+          else other.push(it);
+        }
         d.conditionsOther = other.join(', ');
         break;
       }
@@ -437,6 +512,44 @@ export function parseQrText(text) {
         d.gpPhone = g[2] || '';
         break;
       }
+      case 'DISABILITY': {
+        const other = [];
+        for (const it of items(v)) (isCode(DISABILITIES, it) ? d.disabilities : other).push(it);
+        d.disabilitiesOther = other.join(', ');
+        break;
+      }
+      case 'HOSPITALIZATION': {
+        const h = v.match(/^(\d{4}-\d{2}-\d{2})?\s*(?:\(([^)]*)\))?\s*(.*)$/);
+        d.hospDate = h[1] || '';
+        d.hospPlace = h[2] || '';
+        d.hospReason = h[3] || '';
+        break;
+      }
+      case 'VACCINE':
+        for (const it of items(v)) {
+          const m = it.match(/^(.*?)\s*(\d{4}(?:-\d{2}(?:-\d{2})?)?)?$/);
+          const code = m[1];
+          d.vaccines.push({ name: isCode(VACCINES, code) ? t(`vaccine.${code}`) : code, date: m[2] || '' });
+        }
+        break;
+      case 'TRUSTED PERSON': {
+        const c = v.match(/^(.*?)\s*(?:\(([A-Z]+)\))?\s*(\+?\d+)?$/);
+        d.trustedName = c[1] || '';
+        d.trustedRelation = isCode(RELATIONS, c[2]) ? c[2] : '';
+        d.trustedPhone = c[3] || '';
+        break;
+      }
+      case 'INSURANCE':
+        for (const it of items(v)) {
+          const m = it.match(/^(.*?)(?:\s+NO:(\S+))?(?:\s*\(([^)]*)\))?$/);
+          const type = m[3] || '';
+          d.insurances.push({
+            name: m[1] || '',
+            number: m[2] || '',
+            type: isCode(INSURANCE_TYPES, type) ? t(`insurancetype.${type}`) : type,
+          });
+        }
+        break;
       case 'SURGERY':
         for (const it of items(v)) {
           const m = it.match(/^(.*?)\s*(?:\((\d{4})\))?$/);

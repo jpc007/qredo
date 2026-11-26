@@ -27,9 +27,10 @@ import { printCard } from './ui/print-card.js';
 import { setupLanguageMenu } from './ui/lang-menu.js';
 import { renderInteractions } from './ui/interactions-panel.js';
 import { isIOS } from './core/device.js';
+import { clockSource, parseStamp, syncClock, syncClockIfStale, utcStamp } from './core/clock.js';
 import { applyTranslations, getLocale, onLanguageChange, t } from './i18n/i18n.js';
 
-export const APP_VERSION = '1.0.5';
+export const APP_VERSION = '1.0.6';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
@@ -99,21 +100,44 @@ function refresh() {
     $('st-version').textContent = '–';
     $('st-modules').textContent = '–';
   }
+  renderUpdatedBanner();
   // Avis au patient : interactions possibles entre ses médicaments
   renderInteractions($('med-interactions'), state.meds);
   updateWallpaperPreview();
 }
 
+/** Bandeau "Dernière mise à jour" : heure locale du téléphone + UTC (celle du QR). */
+function renderUpdatedBanner() {
+  const el = $('updated-banner');
+  const st = parseStamp(state.updated);
+  if (!st) {
+    el.textContent = t('updated.none');
+    return;
+  }
+  const local = new Intl.DateTimeFormat(getLocale(), {
+    dateStyle: 'full',
+    ...(st.hasTime ? { timeStyle: 'short' } : {}),
+  }).format(st.date);
+  el.innerHTML = '';
+  const title = document.createElement('strong');
+  title.textContent = t('updated.title');
+  const when = document.createElement('span');
+  when.textContent = ` ${local}`;
+  const utc = document.createElement('small');
+  utc.textContent = `${state.updated} · ${t(clockSource() === 'server' ? 'updated.server' : 'updated.device')}`;
+  el.append('📅 ', title, when, document.createElement('br'), utc);
+}
+
 const onFormChange = debounce(() => {
   state = readForm(form);
-  state.updated = today();
+  state.updated = utcStamp();
   saveDossier(state);
   refresh();
 }, 120);
 
 function loadIntoForm(d) {
   state = normalizeDossier(d);
-  if (!state.updated) state.updated = today();
+  if (!state.updated) state.updated = utcStamp();
   fillForm(form, state);
   saveDossier(state);
   refresh();
@@ -292,7 +316,7 @@ SAMPLES.forEach((s, i) => {
 
 function loadSample(index) {
   const s = SAMPLES[index] || SAMPLES[0];
-  loadIntoForm({ ...structuredClone(s.dossier), updated: today() });
+  loadIntoForm({ ...structuredClone(s.dossier), updated: utcStamp() });
   $('sel-sample').value = SAMPLES.indexOf(s);
   toast(t('demo.loaded', { name: `${s.dossier.firstName} ${s.dossier.lastName}` }));
 }
@@ -375,10 +399,16 @@ if (isIOS()) $('wallpaper-help').dataset.i18nHtml = 'wallpaper.helpIos';
 applyTranslations(); // textes de la page dans la langue choisie
 setupLanguageMenu();
 setupForm(form, onFormChange);
-if (!state.updated) state.updated = today();
+if (!state.updated) state.updated = utcStamp();
 fillForm(form, state);
 refresh();
 window.addEventListener('resize', debounce(refresh, 200));
+
+// Heure fiable : synchronisation avec l'heure UTC du serveur
+syncClock().then(() => renderUpdatedBanner());
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') syncClockIfStale().then(() => renderUpdatedBanner());
+});
 
 // Ajout d'un médicament en scannant sa boîte (téléphone / tablette uniquement)
 setupMedCamera({
