@@ -2,7 +2,7 @@
 // QREDO - Fond d'écran de veille avec le QR code
 // ---------------------------------------------------------------------
 // Mise en page pensée pour l'écran verrouillé :
-//  - le haut (~38 %) reste libre pour l'horloge et les notifications ;
+//  - QR centré verticalement : le haut reste libre pour l'horloge ;
 //  - bandeau rouge "EMERGENCY MEDICAL ID" bien visible ;
 //  - QR sur fond blanc avec marge (indispensable pour la lecture) ;
 //  - le bas reste libre pour les raccourcis (téléphone, caméra).
@@ -54,12 +54,16 @@ export function renderWallpaper(qr, { w, h }, updated) {
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
 
-  const cardW = Math.round(w * 0.84);
+  // Le QR est CENTRÉ verticalement : le haut reste libre pour l'horloge,
+  // le bas pour les raccourcis et textes de l'écran verrouillé (Xiaomi…).
+  const cardW = Math.round(w * 0.78);
   const x = Math.round((w - cardW) / 2);
+  const gap = Math.round(h * 0.012);
+  const bannerH = Math.round(h * 0.06);
+  const cardY = Math.round(h / 2 - cardW / 2);
+  const bannerY = cardY - gap - bannerH;
 
   // Bandeau rouge
-  const bannerY = Math.round(h * 0.38);
-  const bannerH = Math.round(h * 0.06);
   ctx.fillStyle = '#d32f2f';
   roundRect(ctx, x, bannerY, cardW, bannerH, w * 0.025);
   ctx.fill();
@@ -72,7 +76,6 @@ export function renderWallpaper(qr, { w, h }, updated) {
   ctx.fillText('URGENCE MÉDICALE · SCAN ME', w / 2, bannerY + bannerH * 0.76);
 
   // Carré blanc + QR
-  const cardY = bannerY + bannerH + Math.round(h * 0.012);
   ctx.fillStyle = '#fff';
   roundRect(ctx, x, cardY, cardW, cardW, w * 0.03);
   ctx.fill();

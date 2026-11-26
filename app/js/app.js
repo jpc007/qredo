@@ -23,7 +23,7 @@ import { canvasToBlob, renderWallpaper, wallpaperSize } from './ui/wallpaper.js'
 import { decodeImageFile, startScanner } from './ui/scanner.js';
 import { printCard } from './ui/print-card.js';
 
-export const APP_VERSION = '0.4.0';
+export const APP_VERSION = '0.5.0';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');
