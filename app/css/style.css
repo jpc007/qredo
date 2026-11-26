@@ -340,6 +340,29 @@ select:focus {
   }
 }
 
+/* Ligne "médecin spécialiste" : nom, spécialité, téléphone, ✕ */
+.row--specialist + .row--specialist {
+  border-top: 1.5px dashed var(--line);
+  padding-top: 10px;
+}
+.row--specialist > :nth-child(1),
+.row--specialist > :nth-child(2) {
+  grid-column: 1 / -1;
+}
+.row--specialist > :nth-child(3) {
+  grid-column: 1;
+}
+@media (min-width: 560px) {
+  .row--specialist {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+  }
+  .row--specialist > :nth-child(1),
+  .row--specialist > :nth-child(2),
+  .row--specialist > :nth-child(3) {
+    grid-column: auto;
+  }
+}
+
 /* Molécule trouvée sous chaque médicament */
 .med-hint {
   grid-column: 1 / -1;

@@ -28,7 +28,7 @@ import { setupLanguageMenu } from './ui/lang-menu.js';
 import { renderInteractions } from './ui/interactions-panel.js';
 import { applyTranslations, getLocale, onLanguageChange, t } from './i18n/i18n.js';
 
-export const APP_VERSION = '1.0.2';
+export const APP_VERSION = '1.0.3';
 
 const $ = (id) => document.getElementById(id);
 const form = $('dossier-form');

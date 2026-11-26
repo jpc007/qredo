@@ -9,7 +9,15 @@
 // Tout est converti en ASCII : 1 caractère = 1 octet dans le QR.
 // =====================================================================
 
-import { ALLERGENS, CONDITIONS, IMPLANTS, MED_BRAND_TO_INN, REACTIONS, RELATIONS } from '../data/picklists.js';
+import {
+  ALLERGENS,
+  CONDITIONS,
+  IMPLANTS,
+  MED_BRAND_TO_INN,
+  REACTIONS,
+  RELATIONS,
+  SPECIALTIES,
+} from '../data/picklists.js';
 import { t, translationsOf } from '../i18n/i18n.js';
 
 export const QR_HEADER = 'QREDO EMERGENCY MEDICAL ID';
@@ -46,6 +54,7 @@ export function emptyDossier() {
       { name: '', relation: '', phone: '' },
     ],
     gpName: '',
+    specialists: [], // [{ name, specialty, phone }]
     gpPhone: '',
     notes: '',
     updated: '',
@@ -139,6 +148,27 @@ const ALLERGEN_LOOKUP = (() => {
   }
   return map;
 })();
+
+// Spécialités : libellé dans n'importe laquelle des 7 langues, ou code anglais
+const SPECIALTY_LOOKUP = (() => {
+  const map = new Map();
+  for (const code of SPECIALTIES) {
+    map.set(key(code), code);
+    for (const label of translationsOf(`specialty.${code}`)) {
+      map.set(key(label), code);
+      for (const part of label.split('/')) if (key(part).length > 2) map.set(key(part), code);
+    }
+  }
+  return map;
+})();
+
+/** Spécialité saisie -> code anglais ("Cardiologue" -> "CARDIOLOGY"), sinon texte nettoyé. */
+export function specialtyToEn(specialty, ascii = true) {
+  const code = SPECIALTY_LOOKUP.get(key(specialty));
+  if (code) return code;
+  const c = clean(specialty, ascii).replace(/[()]/g, '');
+  return ascii ? c.toUpperCase() : c;
+}
 
 export function allergenToEn(substance, ascii = true) {
   const en = ALLERGEN_LOOKUP.get(key(substance));
@@ -237,6 +267,15 @@ export function buildQrText(d, ascii = true) {
   }
   const gp = [up(d.gpName), phone(d.gpPhone)].filter(Boolean).join(' ');
   add('GP', gp);
+
+  // Médecins spécialistes (une ligne chacun)
+  for (const s of d.specialists || []) {
+    if (!String(s.name ?? '').trim() && !phone(s.phone)) continue;
+    const parts = [up(s.name)];
+    if (String(s.specialty ?? '').trim()) parts.push(`(${specialtyToEn(s.specialty, ascii)})`);
+    if (phone(s.phone)) parts.push(phone(s.phone));
+    add('SPECIALIST', parts.filter(Boolean).join(' '));
+  }
 
   // Divers
   add('LANG', up(d.languages));
@@ -364,6 +403,16 @@ export function parseQrText(text) {
         const g = v.match(/^(.*?)\s*(\+?\d+)?$/);
         d.gpName = g[1] || '';
         d.gpPhone = g[2] || '';
+        break;
+      }
+      case 'SPECIALIST': {
+        const s = v.match(/^(.*?)\s*(?:\(([^)]*)\))?\s*(\+?\d+)?$/);
+        const code = s[2] || '';
+        d.specialists.push({
+          name: s[1] || '',
+          specialty: isCode(SPECIALTIES, code) ? t(`specialty.${code}`) : code,
+          phone: s[3] || '',
+        });
         break;
       }
       case 'LANG':

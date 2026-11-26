@@ -82,7 +82,31 @@ export const CONDITIONS = [
 ];
 
 // Lien avec la personne de contact (relation.<CODE>)
-export const RELATIONS = ['SPOUSE', 'CHILD', 'PARENT', 'SIBLING', 'FRIEND', 'NEIGHBOR', 'CAREGIVER', 'OTHER'];
+// Spécialités médicales (code anglais écrit dans le QR, libellé traduit : 'specialty.CODE')
+export const SPECIALTIES = [
+  'CARDIOLOGY',
+  'NEUROLOGY',
+  'ONCOLOGY',
+  'NEPHROLOGY',
+  'ENDOCRINOLOGY',
+  'PULMONOLOGY',
+  'GASTROENTEROLOGY',
+  'PSYCHIATRY',
+  'RHEUMATOLOGY',
+  'GERIATRICS',
+  'PEDIATRICS',
+  'GYNECOLOGY',
+  'UROLOGY',
+  'DERMATOLOGY',
+  'OPHTHALMOLOGY',
+  'ENT',
+  'ORTHOPEDICS',
+  'HEMATOLOGY',
+  'INTERNAL MEDICINE',
+  'SURGERY',
+];
+
+export const RELATIONS =['SPOUSE', 'CHILD', 'PARENT', 'SIBLING', 'FRIEND', 'NEIGHBOR', 'CAREGIVER', 'OTHER'];
 
 // Noms commerciaux belges/français -> molécule (nom international, DCI)
 // Un "Coversyl" est inconnu à l'étranger, "PERINDOPRIL" est compris partout.

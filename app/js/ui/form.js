@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------
 // Champs simples  : attribut data-field="nomDuChamp"
 // Cases à cocher  : data-group="implants|conditions" + value="CODE"
-// Lignes ajoutées : allergies et médicaments (data-k="...")
+// Lignes ajoutées : allergies, médicaments, spécialistes (data-k="...")
 // Contacts        : data-contact="0|1" + data-k="name|relation|phone"
 // Les libellés portent une clé de traduction (data-i18n) : au changement
 // de langue, seul le texte change ; valeurs et cases cochées restent.
@@ -18,6 +18,7 @@ import {
   REACTIONS,
   RELATIONS,
   SEXES,
+  SPECIALTIES,
 } from '../data/picklists.js';
 import { emptyDossier, medToEn } from '../core/qr-text.js';
 import { isDrugDbLoaded, resolveDrug, searchDrugs } from '../core/drug-db.js';
@@ -97,6 +98,17 @@ export function setupForm(form, onChange) {
   });
   $('#btn-add-med').addEventListener('click', () => {
     addMedRow({ name: '', dose: '' }).querySelector('input').focus();
+  });
+
+  // Médecins spécialistes : suggestions de spécialités traduites
+  const dlS = $('#dl-specialties');
+  for (const code of SPECIALTIES) {
+    const o = option(t(`specialty.${code}`), '');
+    o.dataset.i18nValue = `specialty.${code}`;
+    dlS.append(o);
+  }
+  $('#btn-add-specialist').addEventListener('click', () => {
+    addSpecialistRow({ name: '', specialty: '', phone: '' }).querySelector('input').focus();
   });
 
   // Toute modification du formulaire -> mise à jour du QR
@@ -222,6 +234,31 @@ export function refreshMedRows() {
   $$('#med-list .row').forEach((row) => resolveMedRow(row, { fillDose: false }));
 }
 
+/** Ligne "médecin spécialiste" : nom, spécialité (suggestions traduites), téléphone. */
+export function addSpecialistRow({ name, specialty, phone }) {
+  const row = document.createElement('div');
+  row.className = 'row row--specialist';
+  const input = (k, type, placeholderKey, value) => {
+    const i = document.createElement('input');
+    i.type = type;
+    i.dataset.k = k;
+    i.dataset.i18nPlaceholder = placeholderKey;
+    i.placeholder = t(placeholderKey);
+    i.value = value || '';
+    return i;
+  };
+  const sp = input('specialty', 'text', 'specialists.specialtyPlaceholder', specialty);
+  sp.setAttribute('list', 'dl-specialties');
+  row.append(
+    input('name', 'text', 'specialists.namePlaceholder', name),
+    sp,
+    input('phone', 'tel', 'specialists.phonePlaceholder', phone),
+    removeButton(),
+  );
+  $('#specialist-list').append(row);
+  return row;
+}
+
 /** Remplit le formulaire avec un dossier. */
 export function fillForm(form, d) {
   for (const el of $$('[data-field]', form)) {
@@ -236,6 +273,8 @@ export function fillForm(form, d) {
   (d.allergies || []).forEach(addAllergyRow);
   $('#med-list').innerHTML = '';
   (d.meds || []).forEach(addMedRow);
+  $('#specialist-list').innerHTML = '';
+  (d.specialists || []).forEach(addSpecialistRow);
 
   for (const box of $$('[data-contact]', form)) {
     const c = (d.contacts || [])[+box.dataset.contact] || {};
@@ -256,5 +295,6 @@ export function readForm(form) {
   d.allergies = $$('#allergy-list .row').map(rowData);
   d.meds = $$('#med-list .row').map(rowData);
   d.contacts = $$('[data-contact]', form).map(rowData);
+  d.specialists = $$('#specialist-list .row').map(rowData);
   return d;
 }

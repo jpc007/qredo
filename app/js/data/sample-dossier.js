@@ -8,6 +8,7 @@
 
 const base = {
   address: '',
+  specialists: [],
   languages: '',
   noKnownAllergy: false,
   allergies: [],
@@ -65,6 +66,7 @@ export const SAMPLES = [
         { name: 'Marie Dupont', relation: 'SPOUSE', phone: '+32 400 00 00 11' },
         { name: 'Thomas Dupont', relation: 'CHILD', phone: '+32 400 00 00 12' },
       ],
+      specialists: [{ name: 'Dr Sophie Lambert', specialty: 'Cardiologue', phone: '+32 400 00 00 14' }],
       gpName: 'Dr Martin Dubois',
       gpPhone: '+32 400 00 00 13',
       notes: 'Reduced mobility',
@@ -96,6 +98,10 @@ export const SAMPLES = [
       contacts: [
         { name: 'Luc Lemaître', relation: 'SPOUSE', phone: '+32 400 00 00 21' },
         { name: 'Anne Dubreucq', relation: 'SIBLING', phone: '+32 400 00 00 22' },
+      ],
+      specialists: [
+        { name: 'Dr Anne Leroy', specialty: 'Neurologue', phone: '+32 400 00 00 24' },
+        { name: 'Dr Paul Simon', specialty: 'Endocrinologue / diabétologue', phone: '+32 400 00 00 25' },
       ],
       gpName: 'Dr Calmant',
       gpPhone: '+32 400 00 00 23',
